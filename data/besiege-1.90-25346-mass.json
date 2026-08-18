@@ -1,0 +1,1965 @@
+{
+  "schemaVersion": 1,
+  "gameVersion": "1.90-25346",
+  "unityVersion": "5.4.0f3",
+  "assemblyCSharpSha256": "BECEA5E934C0D1AB0C0D0428DB53000E245997BA9761581D45F13BD168AE1ABF",
+  "source": {
+    "asset": "Besiege_Data/level0",
+    "mapping": "BlockPrefabContainer.Info.ID -> root GameObject Rigidbody component",
+    "extractor": "tools/extract_unity_masses.py",
+    "notes": [
+      "m_Mass is serialized and prefab-verified.",
+      "Unity 5.4 Rigidbody serialization in this asset has no centerOfMass or inertia fields.",
+      "Runtime exporter is required for exact local COM and inertia."
+    ]
+  },
+  "blocks": [
+    {
+      "id": 0,
+      "type": "StartingBlock",
+      "prefabGameObject": "StartingBlock",
+      "hasRigidbody": true,
+      "mass": 0.25,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 1,
+      "type": "DoubleWoodenBlock",
+      "prefabGameObject": "DoubleWoodenBlock",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.10000000149011612,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 2,
+      "type": "Wheel",
+      "prefabGameObject": "Wheel",
+      "hasRigidbody": true,
+      "mass": 1.0,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.0,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 3,
+      "type": "MetalBlade",
+      "prefabGameObject": "MetalBlade",
+      "hasRigidbody": true,
+      "mass": 0.30000001192092896,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 4,
+      "type": "Decoupler",
+      "prefabGameObject": "Decoupler",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 5,
+      "type": "Hinge",
+      "prefabGameObject": "Hinge",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 6,
+      "type": "MetalBall",
+      "prefabGameObject": "MetalBall",
+      "hasRigidbody": true,
+      "mass": 1.0,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 7,
+      "type": "Brace",
+      "prefabGameObject": "Brace",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 8,
+      "type": "Unused",
+      "prefabGameObject": "Unused",
+      "hasRigidbody": true,
+      "mass": 0.30000001192092896,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 9,
+      "type": "Spring",
+      "prefabGameObject": "Spring",
+      "hasRigidbody": true,
+      "mass": 0.30000001192092896,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 10,
+      "type": "WoodenPanel",
+      "prefabGameObject": "WoodenPanel",
+      "hasRigidbody": true,
+      "mass": 0.3499999940395355,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 11,
+      "type": "Cannon",
+      "prefabGameObject": "Cannon",
+      "hasRigidbody": true,
+      "mass": 1.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 12,
+      "type": "ScalingBlock",
+      "prefabGameObject": "ScalingBlock",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 13,
+      "type": "SteeringBlock",
+      "prefabGameObject": "SteeringBlock",
+      "hasRigidbody": true,
+      "mass": 1.0,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.0,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 14,
+      "type": "FlyingBlock",
+      "prefabGameObject": "FlyingBlock",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.5,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 15,
+      "type": "SingleWoodenBlock",
+      "prefabGameObject": "SingleWoodenBlock",
+      "hasRigidbody": true,
+      "mass": 0.30000001192092896,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 16,
+      "type": "Suspension",
+      "prefabGameObject": "Suspension",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.10000000149011612,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 17,
+      "type": "CircularSaw",
+      "prefabGameObject": "CircularSaw",
+      "hasRigidbody": true,
+      "mass": 1.0,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.0,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 18,
+      "type": "Piston",
+      "prefabGameObject": "Piston",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.10000000149011612,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 19,
+      "type": "Swivel",
+      "prefabGameObject": "Swivel",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.10000000149011612,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 20,
+      "type": "Spike",
+      "prefabGameObject": "Spike",
+      "hasRigidbody": true,
+      "mass": 0.30000001192092896,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 21,
+      "type": "Flamethrower",
+      "prefabGameObject": "Flamethrower",
+      "hasRigidbody": true,
+      "mass": 0.30000001192092896,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 22,
+      "type": "SpinningBlock",
+      "prefabGameObject": "SpinningBlock",
+      "hasRigidbody": true,
+      "mass": 1.0,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.0,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 23,
+      "type": "Bomb",
+      "prefabGameObject": "Bomb",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.20000000298023224,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 24,
+      "type": "ArmorPlateSmall",
+      "prefabGameObject": "ArmorPlateSmall",
+      "hasRigidbody": true,
+      "mass": 0.25,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 25,
+      "type": "Wing",
+      "prefabGameObject": "Wing",
+      "hasRigidbody": true,
+      "mass": 0.30000001192092896,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 26,
+      "type": "Propeller",
+      "prefabGameObject": "Propeller",
+      "hasRigidbody": true,
+      "mass": 0.30000001192092896,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 27,
+      "type": "Grabber",
+      "prefabGameObject": "Grabber",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 28,
+      "type": "SteeringHinge",
+      "prefabGameObject": "SteeringHinge",
+      "hasRigidbody": true,
+      "mass": 1.0,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.0,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 29,
+      "type": "ArmorPlateRound",
+      "prefabGameObject": "ArmorPlateRound",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 30,
+      "type": "BombHolder",
+      "prefabGameObject": "BombHolder",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 31,
+      "type": "FlameBall",
+      "prefabGameObject": "FlameBall",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.20000000298023224,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 32,
+      "type": "ArmorPlateLarge",
+      "prefabGameObject": "ArmorPlateLarge",
+      "hasRigidbody": true,
+      "mass": 0.25,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 33,
+      "type": "Plow",
+      "prefabGameObject": "Plow",
+      "hasRigidbody": true,
+      "mass": 1.0,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 34,
+      "type": "WingPanel",
+      "prefabGameObject": "WingPanel",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 35,
+      "type": "Ballast",
+      "prefabGameObject": "Ballast",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 36,
+      "type": "Boulder",
+      "prefabGameObject": "Boulder",
+      "hasRigidbody": true,
+      "mass": 5.0,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.20000000298023224,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 37,
+      "type": "HalfPipe",
+      "prefabGameObject": "HalfPipe",
+      "hasRigidbody": true,
+      "mass": 1.0,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 38,
+      "type": "CogMediumUnpowered",
+      "prefabGameObject": "CogMediumUnpowered",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.0,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 39,
+      "type": "CogMediumPowered",
+      "prefabGameObject": "CogMediumPowered",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.0,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 40,
+      "type": "WheelUnpowered",
+      "prefabGameObject": "WheelUnpowered",
+      "hasRigidbody": true,
+      "mass": 1.0,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.0,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 41,
+      "type": "WoodenPole",
+      "prefabGameObject": "WoodenPole",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 42,
+      "type": "Slider",
+      "prefabGameObject": "Slider",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.0,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 43,
+      "type": "Balloon",
+      "prefabGameObject": "Balloon",
+      "hasRigidbody": true,
+      "mass": 0.2199999988079071,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 1.0,
+        "angularDrag": 0.20000000298023224,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 44,
+      "type": "BallJoint",
+      "prefabGameObject": "BallJoint",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.0,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 45,
+      "type": "RopeWinch",
+      "prefabGameObject": "RopeWinch",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 46,
+      "type": "LargeWheel",
+      "prefabGameObject": "LargeWheel",
+      "hasRigidbody": true,
+      "mass": 1.0,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.0,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 47,
+      "type": "Torch",
+      "prefabGameObject": "Torch",
+      "hasRigidbody": true,
+      "mass": 1.0,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 48,
+      "type": "Drill",
+      "prefabGameObject": "Drill",
+      "hasRigidbody": true,
+      "mass": 1.0,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.0,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 49,
+      "type": "GripPad",
+      "prefabGameObject": "GripPad",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 50,
+      "type": "SmallWheel",
+      "prefabGameObject": "SmallWheel",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.0,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 51,
+      "type": "CogLargeUnpowered",
+      "prefabGameObject": "CogLargeUnpowered",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.0,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 52,
+      "type": "Unused3",
+      "prefabGameObject": "Unused3",
+      "hasRigidbody": true,
+      "mass": 0.30000001192092896,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 53,
+      "type": "ShrapnelCannon",
+      "prefabGameObject": "ShrapnelCannon",
+      "hasRigidbody": true,
+      "mass": 1.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 54,
+      "type": "Grenade",
+      "prefabGameObject": "Grenade",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.20000000298023224,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 55,
+      "type": "SmallPropeller",
+      "prefabGameObject": "SmallPropeller",
+      "hasRigidbody": true,
+      "mass": 0.30000001192092896,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 56,
+      "type": "WaterCannon",
+      "prefabGameObject": "WaterCannon",
+      "hasRigidbody": true,
+      "mass": 1.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 57,
+      "type": "Pin",
+      "prefabGameObject": "Pin",
+      "hasRigidbody": true,
+      "mass": 1.0,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 58,
+      "type": "CameraBlock",
+      "prefabGameObject": "CameraBlock",
+      "hasRigidbody": true,
+      "mass": 1.0000000116860974e-07,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.0,
+        "useGravity": false,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 59,
+      "type": "Rocket",
+      "prefabGameObject": "Rocket",
+      "hasRigidbody": true,
+      "mass": 0.20000000298023224,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.10000000149011612,
+        "angularDrag": 0.10000000149011612,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 60,
+      "type": "LargeWheelUnpowered",
+      "prefabGameObject": "LargeWheelUnpowered",
+      "hasRigidbody": true,
+      "mass": 1.0,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.0,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 61,
+      "type": "Crossbow",
+      "prefabGameObject": "Crossbow",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 62,
+      "type": "Vacuum",
+      "prefabGameObject": "Vacuum",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 63,
+      "type": "Log",
+      "prefabGameObject": "Log",
+      "hasRigidbody": true,
+      "mass": 1.0,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.10000000149011612,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 64,
+      "type": "Magnet",
+      "prefabGameObject": "Magnet",
+      "hasRigidbody": true,
+      "mass": 0.30000001192092896,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 65,
+      "type": "Sensor",
+      "prefabGameObject": "Sensor",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 66,
+      "type": "Timer",
+      "prefabGameObject": "Timer",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 67,
+      "type": "Altimeter",
+      "prefabGameObject": "Altimeter",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 68,
+      "type": "LogicGate",
+      "prefabGameObject": "LogicGate",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 69,
+      "type": "Anglometer",
+      "prefabGameObject": "Anglometer",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.0,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 70,
+      "type": "Speedometer",
+      "prefabGameObject": "Speedometer",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 71,
+      "type": "BuildNode",
+      "prefabGameObject": "BuildNode",
+      "hasRigidbody": false,
+      "mass": null,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "not-applicable",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "not-applicable",
+      "serializedRigidbody": null
+    },
+    {
+      "id": 72,
+      "type": "BuildEdge",
+      "prefabGameObject": "BuildEdge",
+      "hasRigidbody": false,
+      "mass": null,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "not-applicable",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "not-applicable",
+      "serializedRigidbody": null
+    },
+    {
+      "id": 73,
+      "type": "BuildSurface",
+      "prefabGameObject": "BuildSurface",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 74,
+      "type": "SqrBalloon",
+      "prefabGameObject": "SqrBalloon",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 1.5,
+        "angularDrag": 1.0,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 75,
+      "type": "RopeMeasure",
+      "prefabGameObject": "RopeMeasure",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 76,
+      "type": "Axle",
+      "prefabGameObject": "Axle",
+      "hasRigidbody": true,
+      "mass": 0.30000001192092896,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.0,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 77,
+      "type": "MetalJaw",
+      "prefabGameObject": "MetalJaw",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 78,
+      "type": "Sail",
+      "prefabGameObject": "Sail",
+      "hasRigidbody": true,
+      "mass": 0.30000001192092896,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.05000000074505806,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 79,
+      "type": "Rudder",
+      "prefabGameObject": "Rudder",
+      "hasRigidbody": true,
+      "mass": 0.3499999940395355,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.5,
+        "angularDrag": 0.0,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 80,
+      "type": "NauticalScrew",
+      "prefabGameObject": "NauticalScrew",
+      "hasRigidbody": true,
+      "mass": 0.30000001192092896,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.10000000149011612,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 81,
+      "type": "Paddle",
+      "prefabGameObject": "Paddle",
+      "hasRigidbody": true,
+      "mass": 0.25,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.0,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 82,
+      "type": "Buoyancy",
+      "prefabGameObject": "Buoyancy",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 83,
+      "type": "BigBarrel",
+      "prefabGameObject": "BigBarrel",
+      "hasRigidbody": true,
+      "mass": 1.0,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.15000000596046448,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 84,
+      "type": "Harpoon",
+      "prefabGameObject": "Harpoon",
+      "hasRigidbody": true,
+      "mass": 0.75,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 85,
+      "type": "CornerWoodenBlock",
+      "prefabGameObject": "CornerWoodenBlock",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.10000000149011612,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 86,
+      "type": "SkateWheel",
+      "prefabGameObject": "SkateWheel",
+      "hasRigidbody": true,
+      "mass": 0.25,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.10000000149011612,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 87,
+      "type": "BouncyPad",
+      "prefabGameObject": "BouncyPad",
+      "hasRigidbody": true,
+      "mass": 0.20000000298023224,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.10000000149011612,
+        "angularDrag": 0.10000000149011612,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 88,
+      "type": "FlyWheel",
+      "prefabGameObject": "FlyWheel",
+      "hasRigidbody": true,
+      "mass": 1.0,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 89,
+      "type": "DragBlock",
+      "prefabGameObject": "DragBlock",
+      "hasRigidbody": true,
+      "mass": 0.20000000298023224,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 90,
+      "type": "Booster",
+      "prefabGameObject": "Booster",
+      "hasRigidbody": true,
+      "mass": 1.0,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.25,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 91,
+      "type": "SteeringThruster",
+      "prefabGameObject": "SteeringThruster",
+      "hasRigidbody": true,
+      "mass": 0.20000000298023224,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.10000000149011612,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 92,
+      "type": "FuelBarrel",
+      "prefabGameObject": "FuelBarrel",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.10000000149011612,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 93,
+      "type": "FuelGauge",
+      "prefabGameObject": "FuelGauge",
+      "hasRigidbody": true,
+      "mass": 0.20000000298023224,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.0,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 94,
+      "type": "GridFin",
+      "prefabGameObject": "GridFin",
+      "hasRigidbody": true,
+      "mass": 0.30000001192092896,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 95,
+      "type": "SteeringFin",
+      "prefabGameObject": "SteeringFin",
+      "hasRigidbody": true,
+      "mass": 0.3499999940395355,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.5,
+        "angularDrag": 0.0,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 96,
+      "type": "FuelLine",
+      "prefabGameObject": "FuelLine",
+      "hasRigidbody": true,
+      "mass": 0.20000000298023224,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 97,
+      "type": "Parachute",
+      "prefabGameObject": "Parachute",
+      "hasRigidbody": true,
+      "mass": 0.20000000298023224,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.10000000149011612,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 98,
+      "type": "FuelCoupler",
+      "prefabGameObject": "FuelCoupler",
+      "hasRigidbody": true,
+      "mass": 0.5,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 99,
+      "type": "FuelBarrelBig",
+      "prefabGameObject": "FuelBarrelBig",
+      "hasRigidbody": true,
+      "mass": 5.0,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.10000000149011612,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 100,
+      "type": "SpaceWheel",
+      "prefabGameObject": "SpaceWheel",
+      "hasRigidbody": true,
+      "mass": 1.0,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.20000000298023224,
+        "angularDrag": 0.0,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 101,
+      "type": "ReactionSteeringBlock",
+      "prefabGameObject": "ReactionSteeringBlock",
+      "hasRigidbody": true,
+      "mass": 0.25,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.0,
+        "angularDrag": 0.10000000149011612,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    },
+    {
+      "id": 102,
+      "type": "FuelCannon",
+      "prefabGameObject": "FuelCannon",
+      "hasRigidbody": true,
+      "mass": 1.0,
+      "massProvenance": "prefab-verified",
+      "localCenterOfMass": null,
+      "centerOfMassProvenance": "runtime-required",
+      "inertiaTensor": null,
+      "inertiaTensorRotation": null,
+      "inertiaProvenance": "runtime-required",
+      "serializedRigidbody": {
+        "drag": 0.05000000074505806,
+        "angularDrag": 0.05000000074505806,
+        "useGravity": true,
+        "isKinematicInPrefab": true
+      }
+    }
+  ]
+}

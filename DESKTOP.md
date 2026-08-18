@@ -1,0 +1,95 @@
+# Besiege Aero Analyzer Desktop (Tauri 2)
+
+Desktop package is a thin Tauri 2 shell around the existing React/Vite application. It does not contain a second UI or a second implementation of the physics formulas. Production loads the compiled `dist/` files directly from the application bundle; no localhost server is started.
+
+## Development prerequisites
+
+Windows x64 development requires:
+
+- Node.js 24+ and installed packages from `package.json`;
+- Rust stable `x86_64-pc-windows-msvc`;
+- Microsoft Visual Studio C++ Build Tools with Desktop development with C++ and a Windows SDK;
+- Microsoft Edge WebView2 Runtime.
+
+Install JavaScript dependencies once with:
+
+```powershell
+npm install
+```
+
+The existing browser development mode remains unchanged:
+
+```powershell
+.\run-ui.ps1
+```
+
+## Desktop development
+
+Run the Tauri development window and Vite together:
+
+```powershell
+.\run-desktop.ps1
+```
+
+Equivalent command when Node/npm are in `PATH`:
+
+```powershell
+npm run tauri dev
+```
+
+`run-desktop.ps1` also finds the bundled Codex Node runtime and the user-local Cargo installation on this workstation.
+
+## Release build
+
+Build the frontend, standalone release executable and NSIS installer:
+
+```powershell
+.\build-desktop.ps1
+```
+
+Equivalent command:
+
+```powershell
+npm run tauri build
+```
+
+Release artifacts:
+
+- portable/direct executable: `src-tauri\target\release\besiege-aero-analyzer.exe`;
+- NSIS installer: `src-tauri\target\release\bundle\nsis\Besiege Aero Analyzer_0.1.0_x64-setup.exe`.
+
+The direct executable can be started without installation on a Windows system with WebView2. The NSIS package installs for the current user and checks/downloads WebView2 when needed. Neither artifact is code-signed in this PoC, so Windows SmartScreen may show an unknown-publisher warning.
+
+## Desktop behavior
+
+- Window title: Besiege Aero Analyzer.
+- Default size: 1400×900; minimum size: 1024×680; normal resizable Windows frame.
+- HTML5 drag-and-drop remains enabled for `.bsg` files on Windows (`dragDropEnabled=false` disables Tauri's competing native drop handler).
+- Open `.bsg` continues to use the existing local file input and works in browser and WebView2 modes.
+- Analysis JSON and Plot Lab JSON/CSV exports use native Windows **Save As** dialogs in desktop mode. JSON/CSV imports use native Windows **Open** dialogs.
+- The same actions keep browser-mode file-picker/download fallbacks; React components use one shared file-I/O adapter rather than Tauri checks.
+- Physics, mass model, derivatives, sweeps, what-if masks, comparisons and Three.js all execute inside the local webview.
+- The app has no remote server, external API or Rust calculation backend.
+- `localStorage` contains only UI preferences. Machines are not persisted.
+
+## Validation commands
+
+```powershell
+npm test
+npm run typecheck
+npm run build
+npm run tauri build
+```
+
+The browser and desktop builds use the same frontend output. CLI use through `run.ps1` remains independent.
+
+## Known limitations
+
+- The application icon is a temporary BA project icon.
+- File association for `.bsg` is not registered.
+- Analysis JSON stores analysis/UI state, not the source `.bsg`; deferred restore still requires the user to open the matching machine file.
+- Imported CSV overlays currently target Plot Lab 1D. Re-importing a 2D `x,y,value` CSV as a heatmap is not implemented yet.
+- The executable and installer are unsigned.
+- The 3D view intentionally uses engineering placeholders, not Besiege meshes.
+- Physics limitations documented in `UI.md`, `ANALYSIS.md` and `POC.md` are unchanged.
+- No runtime exporter, exact inertia, runtime joint graph, multibody simulation or new aerodynamic law is included.

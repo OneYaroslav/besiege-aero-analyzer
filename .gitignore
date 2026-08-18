@@ -1,0 +1,17 @@
+node_modules/
+dist/
+.pnpm-store/
+*.tsbuildinfo
+src-tauri/target/
+.tools/
+coverage/
+.vite/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+.idea/
+.vscode/
+rustup-init.exe
+vs_BuildTools.exe
