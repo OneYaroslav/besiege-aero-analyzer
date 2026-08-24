@@ -17,8 +17,10 @@ import { suggestComponents, type AnalysisGroup, type ComponentSuggestion } from 
 import { analyzeMass } from "./mass.ts";
 import type { Vec3 } from "./math.ts";
 import type { PlotLabUiState } from "./plot-lab.ts";
+import type { AnalysisSnapshot, BladeGroup } from "./session-state.ts";
+import { applyBladeWhatIfOverrides, type BladeWhatIfOverride } from "./what-if.ts";
 
-export const UI_ANALYSIS_VERSION = "0.3.0-ui-poc";
+export const UI_ANALYSIS_VERSION = "0.5.0-ui-poc";
 
 export interface OperatingPoint {
   readonly speed: number;
@@ -66,6 +68,9 @@ export interface UiAnalysisBundle {
   readonly groupStatus: "ALL BLOCKS" | "HEURISTIC";
   readonly sweeps: Readonly<Record<"alpha" | "beta" | "p" | "q" | "r", SweepResult>>;
   readonly contribution: BladeContributionAnalysis;
+  /** Existing per-blade central-difference analyses, precomputed for spatial display modes. */
+  readonly contributions: Readonly<Record<ContributionDerivative, BladeContributionAnalysis>>;
+  readonly whatIfOverrides: readonly BladeWhatIfOverride[];
 }
 
 export interface BladeTableRow {
@@ -93,6 +98,10 @@ export type PrecisionMode = "auto" | "3" | "6";
 export interface UiExportState {
   readonly precision: PrecisionMode;
   readonly plotLab: PlotLabUiState;
+  readonly activeMachine?: "A" | "B";
+  readonly showDeltaPercent?: boolean;
+  readonly bladeGroups?: readonly (readonly BladeGroup[])[];
+  readonly snapshots?: readonly AnalysisSnapshot[];
 }
 
 export function discoverMachine(machine: BsgMachine, proximityThreshold = 1.5): MachineDiscovery {
@@ -155,10 +164,12 @@ export function buildUiAnalysis(
   operatingPoint: OperatingPoint,
   disabledBladeGuids: ReadonlySet<string>,
   contributionDerivative: ContributionDerivative,
+  whatIfOverrides: readonly BladeWhatIfOverride[] = [],
   steps: DerivativeSteps = DEFAULT_DERIVATIVE_STEPS,
 ): UiAnalysisBundle {
+  const effectiveMachine = applyBladeWhatIfOverrides(machine, whatIfOverrides);
   const groups = groupConfig(selection, discovery);
-  const report = analyzeMachine(machine, {
+  const report = analyzeMachine(effectiveMachine, {
     speed: operatingPoint.speed,
     alpha: operatingPoint.alphaDegrees * Math.PI / 180,
     beta: operatingPoint.betaDegrees * Math.PI / 180,
@@ -173,6 +184,17 @@ export function buildUiAnalysis(
     disabledBladeGuids,
     steps,
   });
+  const contributionKinds: readonly ContributionDerivative[] = [
+    "pitch-damping",
+    "yaw-damping",
+    "roll-damping",
+    "pitch-alpha",
+    "yaw-beta",
+  ];
+  const contributions = Object.fromEntries(contributionKinds.map((derivative) => [
+    derivative,
+    analyzeBladeContributions(report.blades, report.state, derivative, steps),
+  ])) as Record<ContributionDerivative, BladeContributionAnalysis>;
   return {
     report,
     discovery,
@@ -185,12 +207,9 @@ export function buildUiAnalysis(
       q: sweepRate(report.blades, report.state, "q"),
       r: sweepRate(report.blades, report.state, "r"),
     },
-    contribution: analyzeBladeContributions(
-      report.blades,
-      report.state,
-      contributionDerivative,
-      steps,
-    ),
+    contribution: contributions[contributionDerivative],
+    contributions,
+    whatIfOverrides,
   };
 }
 
@@ -242,7 +261,7 @@ export function formatNumber(value: number, precision: PrecisionMode): string {
   return new Intl.NumberFormat("en-US", { maximumSignificantDigits: 7, useGrouping: false }).format(value);
 }
 
-function machineExport(bundle: UiAnalysisBundle): object {
+function machineExport(bundle: UiAnalysisBundle, bladeGroups: readonly BladeGroup[] = []): object {
   const report = bundle.report;
   return {
     metadata: {
@@ -269,6 +288,8 @@ function machineExport(bundle: UiAnalysisBundle): object {
       availableCount: report.availableBlades.length,
       enabledCount: report.blades.length,
       disabledGuids: [...report.disabledBladeGuids],
+      groups: bladeGroups,
+      whatIfOverrides: bundle.whatIfOverrides,
     },
     operatingPoint: {
       speed: report.state.speed,
@@ -306,9 +327,18 @@ export function buildExportPayload(first: UiAnalysisBundle, second?: UiAnalysisB
       "Besiege 1.90-25346 recovered vanilla blade law; no new aerodynamic formula.",
       "Aircraft/component choices marked HEURISTIC do not reconstruct the runtime joint graph.",
       "CG is approximate where runtime Rigidbody COM/mass overrides are unavailable.",
+      "What-if overrides are GUID-addressed virtual input transforms; the source BSG is not modified.",
       "No multibody dynamics, inertia time response, control actuation, or SI conversion.",
     ],
-    ui,
-    machines: second ? [machineExport(first), machineExport(second)] : [machineExport(first)],
+    ui: ui ? {
+      precision: ui.precision,
+      plotLab: ui.plotLab,
+      activeMachine: ui.activeMachine,
+      showDeltaPercent: ui.showDeltaPercent,
+    } : undefined,
+    snapshots: ui?.snapshots ?? [],
+    machines: second
+      ? [machineExport(first, ui?.bladeGroups?.[0]), machineExport(second, ui?.bladeGroups?.[1])]
+      : [machineExport(first, ui?.bladeGroups?.[0])],
   };
 }

@@ -1,0 +1,8 @@
+{
+  "actions": { "save": "Save", "cancel": "Cancel", "import": "Import", "export": "Export", "reset": "Reset", "delete": "Delete", "apply": "Apply", "close": "Close", "replace": "Replace", "open": "Open", "rename": "Rename", "duplicate": "Duplicate", "remove": "Remove", "enable": "Enable", "disable": "Disable", "select": "Select", "show": "Show", "hide": "Hide", "finish": "Finish" },
+  "status": { "live": "LIVE", "loading": "Loading…", "calculating": "Calculating…", "estimated": "Estimated", "unknown": "Unknown", "notAvailable": "N/A", "enabled": "Enabled", "disabled": "Disabled", "mixed": "Mixed", "yes": "Yes", "no": "No" },
+  "help": { "about": "About {{subject}}", "more": "More information", "slider": "{{label}} slider", "exactValue": "{{label}} exact value" },
+  "files": { "openMachine": "Open Besiege machine", "besiegeMachine": "Besiege machine", "dropMachine": "Drop a .bsg machine", "localOnly": "Processed locally · file is never uploaded", "opening": "Opening…", "openBsg": "Open .bsg" },
+  "language": { "label": "Language", "english": "English", "russian": "Русский" },
+  "app": { "title": "Besiege Aero Analyzer", "subtitle": "engineering analysis workspace" }
+}

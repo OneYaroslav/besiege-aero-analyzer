@@ -1,6 +1,6 @@
 [package]
 name = "besiege-aero-analyzer"
-version = "0.1.0"
+version = "0.5.0"
 description = "Local engineering analysis for Besiege aerodynamic blade machines"
 authors = ["Besiege Aero Analyzer contributors"]
 edition = "2021"

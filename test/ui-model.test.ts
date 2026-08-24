@@ -75,6 +75,7 @@ test("UI view model assembles compare rows and zeroes disabled blade table outpu
     "pitch-alpha", "yaw-beta", "roll-beta", "roll-p", "pitch-q", "yaw-r",
   ]);
   assert.equal(comparison.find((row) => row.key === "blades")?.first, 1);
+  assert.deepEqual(Object.keys(first.contributions).sort(), ["pitch-alpha", "pitch-damping", "roll-damping", "yaw-beta", "yaw-damping"]);
 });
 
 test("number precision modes are deterministic", () => {

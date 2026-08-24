@@ -181,12 +181,15 @@ function parseStringData(blockBody: string, context: string): Map<string, string
   const values = new Map<string, string>();
   const dataMatch = blockBody.match(/<Data\b[^>]*>([\s\S]*?)<\/Data>/i);
   if (!dataMatch) return values;
-  const pattern = /<String\b([^>]*)>([\s\S]*?)<\/String>/gi;
+  // A self-closing mapper string must not consume the following String as its
+  // body. BuildEdge/BuildSurface commonly serialize an empty
+  // bmt-TransformHolder immediately before their real start/end/edges values.
+  const pattern = /<String\b([^>]*?)(?:\/\s*>|>([\s\S]*?)<\/String>)/gi;
   for (const match of dataMatch[1].matchAll(pattern)) {
     const attributes = parseAttributes(match[1], `${context} <String>`);
     const key = attributes.get("key");
     // StringArray child items do not have keys and are outside this PoC's data model.
-    if (key !== undefined) values.set(key, decodeXml(match[2].trim()));
+    if (key !== undefined) values.set(key, decodeXml((match[2] ?? "").trim()));
   }
   return values;
 }

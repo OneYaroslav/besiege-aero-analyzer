@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "gameVersion": "1.90-25346",
+  "defaultMode": "static-prefab",
+  "overrides": [
+    { "id": 7, "mode": "procedural", "reason": "Brace geometry is defined by serialized endpoints." },
+    { "id": 9, "mode": "procedural", "reason": "Spring geometry is defined by serialized endpoints and runtime extension." },
+    { "id": 16, "mode": "schematic-fallback", "reason": "Suspension visual extension is mapper/runtime dependent." },
+    { "id": 18, "mode": "schematic-fallback", "reason": "Piston visual extension is mapper/runtime dependent." },
+    {
+      "id": 41,
+      "mode": "shortening-prefab",
+      "reason": "ShorteningBlock switches between two verified prefab renderers.",
+      "variants": {
+        "full": { "length": 2, "rendererPath": "/WoodenPole/Vis" },
+        "short": { "length": 1, "rendererPath": "/WoodenPole/Vis/HalfVis" }
+      }
+    },
+    { "id": 42, "mode": "static-prefab", "includePathPrefixes": ["/Slider/Vis"], "reason": "SliderBlock changes joint/collider state for preextended, while the verified Vis mesh and local transform remain static." },
+    { "id": 45, "mode": "procedural", "reason": "RopeWinch endpoints and cylinder length are runtime dependent." },
+    {
+      "id": 63,
+      "mode": "shortening-prefab",
+      "reason": "ShorteningBlock switches between two verified prefab renderers.",
+      "variants": {
+        "full": { "length": 3, "rendererPath": "/Log/Vis" },
+        "short": { "length": 2, "rendererPath": "/Log/Vis/HalfVis" }
+      }
+    },
+    { "id": 71, "mode": "procedural", "reason": "BuildNode is construction topology rather than a stable machine visual." },
+    { "id": 72, "mode": "procedural", "reason": "BuildEdge is reconstructed from explicit serialized GUID endpoints." },
+    { "id": 73, "mode": "procedural", "reason": "BuildSurface prefab contains inactive drag handles; the surface is reconstructed from explicit links." },
+    { "id": 75, "mode": "procedural", "reason": "RopeMeasure geometry depends on serialized/runtime endpoints." },
+    {
+      "id": 84,
+      "mode": "static-prefab",
+      "includePathPrefixes": ["/Harpoon/Vis"],
+      "reason": "Use the body and rope-coil visual hierarchy; exclude projectile and runtime rope children."
+    },
+    { "id": 78, "mode": "schematic-fallback", "reason": "Sail visual deformation/state is runtime dependent and its prefab visual is inactive." },
+    { "id": 96, "mode": "procedural", "reason": "FuelLine geometry depends on endpoints/runtime connection state." },
+    { "id": 97, "mode": "schematic-fallback", "reason": "Parachute prefab mixes packed visual with runtime ropes/deployed state." }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "actions": { "save": "Сохранить", "cancel": "Отмена", "import": "Импорт", "export": "Экспорт", "reset": "Сбросить", "delete": "Удалить", "apply": "Применить", "close": "Закрыть", "replace": "Заменить", "open": "Открыть", "rename": "Переименовать", "duplicate": "Дублировать", "remove": "Удалить", "enable": "Включить", "disable": "Отключить", "select": "Выбрать", "show": "Показать", "hide": "Скрыть", "finish": "Завершить" },
+  "status": { "live": "В РЕАЛЬНОМ ВРЕМЕНИ", "loading": "Загрузка…", "calculating": "Расчёт…", "estimated": "Оценочно", "unknown": "Неизвестно", "notAvailable": "Н/Д", "enabled": "Включено", "disabled": "Отключено", "mixed": "Смешанное", "yes": "Да", "no": "Нет" },
+  "help": { "about": "Справка: {{subject}}", "more": "Подробнее", "slider": "Ползунок: {{label}}", "exactValue": "Точное значение: {{label}}" },
+  "files": { "openMachine": "Открыть машину Besiege", "besiegeMachine": "Машина Besiege", "dropMachine": "Перетащите .bsg машины", "localOnly": "Обрабатывается локально · файл никуда не отправляется", "opening": "Открытие…", "openBsg": "Открыть .bsg" },
+  "language": { "label": "Язык", "english": "English", "russian": "Русский" },
+  "app": { "title": "Besiege Aero Analyzer", "subtitle": "инженерная среда анализа" }
+}

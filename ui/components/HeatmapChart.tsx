@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
-import type { Plot2DPoint, Plot2DResult } from "../../src/plot-lab.ts";
+import { zeroContourSegments, type Plot2DPoint, type Plot2DResult } from "../../src/plot-lab.ts";
 import { formatNumber, type PrecisionMode } from "../../src/ui-model.ts";
+import { useTranslation } from "react-i18next";
 
 interface HeatmapChartProps {
   readonly title: string;
@@ -8,6 +9,14 @@ interface HeatmapChartProps {
   readonly precision: PrecisionMode;
   readonly domain?: readonly [number, number];
   readonly tone?: "A" | "B" | "delta";
+  readonly contours?: readonly HeatmapContour[];
+}
+
+export interface HeatmapContour {
+  readonly result: Plot2DResult;
+  readonly label: string;
+  readonly color: string;
+  readonly dashed?: boolean;
 }
 
 interface HoverPoint {
@@ -43,7 +52,12 @@ function domainFor(result: Plot2DResult): readonly [number, number] {
   return [Math.min(...values), Math.max(...values)];
 }
 
-export function HeatmapChart({ title, result, precision, domain, tone }: HeatmapChartProps) {
+export function HeatmapChart({ title, result, precision, domain, tone, contours = [] }: HeatmapChartProps) {
+  const { t } = useTranslation("plotlab");
+  const xLabel = t(`inputs.${result.config.xVariable}`);
+  const yLabel = t(`inputs.${result.config.yVariable}`);
+  const quantityLabel = t(`quantities.${result.config.quantity}`);
+  const translatedUnits = (units: string) => t(`units.${units}`, { defaultValue: units });
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 0, height: 360 });
@@ -83,7 +97,32 @@ export function HeatmapChart({ title, result, precision, domain, tone }: Heatmap
       context.fillStyle = heatColor(point.value, minimum, maximum);
       context.fillRect(xIndex * cellWidth, displayRow * cellHeight, Math.ceil(cellWidth + 0.4), Math.ceil(cellHeight + 0.4));
     });
-  }, [maximum, minimum, result, size]);
+    const xMinimum = result.xValues[0] ?? 0;
+    const xMaximum = result.xValues.at(-1) ?? xMinimum;
+    const yMinimum = result.yValues[0] ?? 0;
+    const yMaximum = result.yValues.at(-1) ?? yMinimum;
+    const toCanvas = (point: readonly [number, number]): readonly [number, number] => [
+      xMaximum === xMinimum ? size.width / 2 : cellWidth / 2 + (point[0] - xMinimum) / (xMaximum - xMinimum) * (size.width - cellWidth),
+      yMaximum === yMinimum ? size.height / 2 : size.height - cellHeight / 2 - (point[1] - yMinimum) / (yMaximum - yMinimum) * (size.height - cellHeight),
+    ];
+    for (const contour of contours) {
+      context.save();
+      context.strokeStyle = contour.color;
+      context.lineWidth = 1.8;
+      context.setLineDash(contour.dashed ? [5, 4] : []);
+      context.shadowColor = "rgba(3, 8, 12, .9)";
+      context.shadowBlur = 2;
+      context.beginPath();
+      for (const segment of zeroContourSegments(contour.result)) {
+        const from = toCanvas(segment.from);
+        const to = toCanvas(segment.to);
+        context.moveTo(from[0], from[1]);
+        context.lineTo(to[0], to[1]);
+      }
+      context.stroke();
+      context.restore();
+    }
+  }, [maximum, minimum, result, size, contours]);
 
   function pointAt(event: PointerEvent<HTMLCanvasElement>): void {
     const canvas = canvasRef.current;
@@ -109,21 +148,21 @@ export function HeatmapChart({ title, result, precision, domain, tone }: Heatmap
 
   return (
     <section className={`heatmap-panel ${tone ? `machine-${tone.toLowerCase()}` : ""}`}>
-      <div className="heatmap-title"><div><strong>{title}</strong><small>{result.valueUnits}</small></div><span>{result.config.xRange.points} × {result.config.yRange.points} cells</span></div>
+      <div className="heatmap-title"><div><strong>{title}</strong><small>{translatedUnits(result.valueUnits)}</small>{contours.length > 0 && <div className="heatmap-contour-legend">{contours.map((contour) => <span key={`${contour.label}-${contour.color}`}><i style={{ borderColor: contour.color, borderTopStyle: contour.dashed ? "dashed" : "solid" }} />{contour.label}</span>)}</div>}</div><span>{result.config.xRange.points} × {result.config.yRange.points} {t("cells")}</span></div>
       <div className="heatmap-layout">
-        <div className="heatmap-y-label"><span>{result.config.yVariable} · {result.yUnits}</span></div>
+        <div className="heatmap-y-label"><span>{yLabel} · {translatedUnits(result.yUnits)}</span></div>
         <div className="heatmap-y-ticks"><span>{formatNumber(result.yValues.at(-1) ?? 0, precision)}</span><span>{formatNumber(result.yValues[0] ?? 0, precision)}</span></div>
         <div className="heatmap-canvas-wrap" ref={wrapRef}>
-          <canvas ref={canvasRef} role="img" aria-label={`${title}: ${result.config.quantity} by ${result.config.xVariable} and ${result.config.yVariable}`} onPointerMove={pointAt} onPointerLeave={() => setHover(undefined)} />
+          <canvas ref={canvasRef} role="img" aria-label={t("heatmapAria", { title, quantity: quantityLabel, x: xLabel, y: yLabel })} onPointerMove={pointAt} onPointerLeave={() => setHover(undefined)} />
           {hover && <div className="heatmap-tooltip" style={{ left: hover.left, top: hover.top }}>
-            <span>{result.config.xVariable} = <strong>{formatNumber(hover.point.x, precision)}</strong> {result.xUnits}</span>
-            <span>{result.config.yVariable} = <strong>{formatNumber(hover.point.y, precision)}</strong> {result.yUnits}</span>
-            <span>value = <strong>{formatNumber(hover.point.value, precision)}</strong> {result.valueUnits}</span>
+            <span>{xLabel} = <strong>{formatNumber(hover.point.x, precision)}</strong> {translatedUnits(result.xUnits)}</span>
+            <span>{yLabel} = <strong>{formatNumber(hover.point.y, precision)}</strong> {translatedUnits(result.yUnits)}</span>
+            <span>{t("valueLower")} = <strong>{formatNumber(hover.point.value, precision)}</strong> {translatedUnits(result.valueUnits)}</span>
           </div>}
         </div>
-        <div className="heatmap-x-label"><span>{result.config.xVariable} · {result.xUnits}</span><div><span>{formatNumber(result.xValues[0] ?? 0, precision)}</span><span>{formatNumber(result.xValues.at(-1) ?? 0, precision)}</span></div></div>
+        <div className="heatmap-x-label"><span>{xLabel} · {translatedUnits(result.xUnits)}</span><div><span>{formatNumber(result.xValues[0] ?? 0, precision)}</span><span>{formatNumber(result.xValues.at(-1) ?? 0, precision)}</span></div></div>
       </div>
-      <div className="heatmap-legend" aria-label={`Color scale from ${minimum} to ${maximum}`}>
+      <div className="heatmap-legend" aria-label={t("colorScale", { minimum, maximum })}>
         <span>{formatNumber(minimum, precision)}</span><div className="heatmap-swatches">{swatches.map((color, index) => <i key={index} style={{ backgroundColor: color }} />)}{hasZero && <span className="heatmap-zero" style={{ left: `${zeroPosition}%` }}>0</span>}</div><span>{formatNumber(maximum, precision)}</span>
       </div>
     </section>

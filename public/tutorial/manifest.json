@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "asset": "tutorial-aircraft.bsg",
+  "machineName": "Изделие-17М4Б1ОБЛ",
+  "sourceSha256": "EB003B5EE74D2F9250D5985D395001BC638044C7F12AA79DB3BBCB6574DAFFF0",
+  "analysisGroup": "aircraft-heuristic",
+  "besiegeTarget": "1.90-25346",
+  "notes": "Bundled tutorial fixture; parsed and analyzed through the normal application core."
+}

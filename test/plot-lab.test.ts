@@ -11,7 +11,11 @@ import {
   evaluatePlot2D,
   formatPlot1DCsv,
   formatPlot2DCsv,
+  quasiSteadyTurnEstimate,
   stateForPlotInput,
+  turnEquilibriumCurve,
+  zeroContourSegments,
+  type Plot2DResult,
 } from "../src/plot-lab.ts";
 
 const rotation: Quaternion = { x: 0, y: 0, z: 0, w: 1 };
@@ -114,4 +118,63 @@ test("2D CSV uses one row per grid cell and includes A/B/delta fields", () => {
   assert.match(lines[0], /Delta B - A/);
   assert.equal(lines.length, 7);
   assert.equal(lines[1].split(",").length, 5);
+});
+
+function syntheticTurnMap(values: readonly (readonly number[])[]): Plot2DResult {
+  const xValues = [50, 100, 150];
+  const yValues = [-1, 0, 1];
+  return {
+    config: {
+      xVariable: "speed",
+      yVariable: "q",
+      xRange: { minimum: 50, maximum: 150, points: 3 },
+      yRange: { minimum: -1, maximum: 1, points: 3 },
+      quantity: "pitchMoment",
+    },
+    xUnits: "game units/s",
+    yUnits: "rad/s",
+    valueUnits: "game moment units",
+    xValues,
+    yValues,
+    points: yValues.flatMap((y, yIndex) => xValues.map((x, xIndex) => ({ x, y, value: values[yIndex][xIndex] }))),
+  };
+}
+
+test("turn analysis extracts and interpolates the zero-moment contour", () => {
+  const result = syntheticTurnMap([
+    [-1.5, -1.25, -1],
+    [-0.5, -0.25, 0],
+    [0.5, 0.75, 1],
+  ]);
+  assert.deepEqual(turnEquilibriumCurve(result).map((point) => point.q), [0.5, 0.25, 0]);
+  assert.ok(zeroContourSegments(result).length > 0);
+  const estimate = quasiSteadyTurnEstimate(result, 75);
+  assert.ok(estimate);
+  assert.ok(Math.abs(estimate.qRadiansPerSecond - 0.375) < 1e-12);
+  assert.ok(Math.abs(estimate.qDegreesPerSecond - 0.375 * 180 / Math.PI) < 1e-12);
+  assert.equal(estimate.radiusGameUnits, 200);
+});
+
+test("turn estimate is unavailable when the selected q range contains no zero crossing", () => {
+  const result = syntheticTurnMap([
+    [1, 2, 3],
+    [2, 3, 4],
+    [3, 4, 5],
+  ]);
+  assert.deepEqual(turnEquilibriumCurve(result).map((point) => point.q), [null, null, null]);
+  assert.equal(quasiSteadyTurnEstimate(result, 100), null);
+  assert.equal(zeroContourSegments(result).length, 0);
+});
+
+test("zero turn rate reports q but no finite kinematic radius", () => {
+  const result = syntheticTurnMap([
+    [-1, -1, -1],
+    [0, 0, 0],
+    [1, 1, 1],
+  ]);
+  const estimate = quasiSteadyTurnEstimate(result, 100);
+  assert.ok(estimate);
+  assert.equal(estimate.qRadiansPerSecond, 0);
+  assert.equal(estimate.qDegreesPerSecond, 0);
+  assert.equal(estimate.radiusGameUnits, null);
 });

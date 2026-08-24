@@ -1,13 +1,16 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 import { computeTooltipPosition, type TooltipPosition } from "../tooltip-position.ts";
+import { useTranslation } from "react-i18next";
 
 interface InfoTooltipProps {
   readonly children: ReactNode;
   readonly label?: string;
 }
 
-export function InfoTooltip({ children, label = "More information" }: InfoTooltipProps) {
+export function InfoTooltip({ children, label }: InfoTooltipProps) {
+  const { t } = useTranslation("common");
+  const accessibleLabel = label ?? t("help.more");
   const id = useId();
   const rootRef = useRef<HTMLSpanElement>(null);
   const popoverRef = useRef<HTMLSpanElement>(null);
@@ -90,7 +93,7 @@ export function InfoTooltip({ children, label = "More information" }: InfoToolti
       <button
         type="button"
         className="info-trigger"
-        aria-label={label}
+        aria-label={accessibleLabel}
         aria-expanded={visible}
         aria-describedby={visible ? id : undefined}
         onClick={toggle}

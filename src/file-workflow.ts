@@ -17,6 +17,14 @@ import {
   type PrecisionMode,
   type UiGroupSelection,
 } from "./ui-model.ts";
+import type {
+  AnalysisSessionState,
+  AnalysisSnapshot,
+  BladeGroup,
+  SnapshotMachineState,
+} from "./session-state.ts";
+import type { BladeWhatIfOverride } from "./what-if.ts";
+import type { Vec3 } from "./math.ts";
 
 export const ANALYSIS_EXPORT_FORMAT = "besiege-aero-analyzer-analysis";
 
@@ -31,6 +39,8 @@ export interface ImportedMachineState {
   readonly name: string;
   readonly groupSelection: UiGroupSelection;
   readonly disabledBladeGuids: readonly string[];
+  readonly bladeGroups: readonly BladeGroup[];
+  readonly whatIfOverrides: readonly BladeWhatIfOverride[];
 }
 
 export interface ImportedAnalysisState {
@@ -39,6 +49,9 @@ export interface ImportedAnalysisState {
   readonly operatingPoint: OperatingPoint;
   readonly precision?: PrecisionMode;
   readonly plotLab: PlotLabUiState;
+  readonly activeMachine: "A" | "B";
+  readonly showDeltaPercent: boolean;
+  readonly snapshots: readonly AnalysisSnapshot[];
   readonly machines: readonly ImportedMachineState[];
 }
 
@@ -131,8 +144,61 @@ function parseGuids(value: unknown, label: string): readonly string[] {
   return [...new Set(guids)];
 }
 
-function parseOperatingPoint(value: unknown): OperatingPoint {
-  const point = requiredRecord(value, "machines[0].operatingPoint");
+function parseBladeGroups(value: unknown, label: string): readonly BladeGroup[] {
+  if (value === undefined) return [];
+  if (!Array.isArray(value)) throw new ImportValidationError(`${label} must be an array`);
+  if (value.length > 1_000) throw new ImportValidationError(`${label} contains too many groups`);
+  const ids = new Set<string>();
+  return value.map((entry, index) => {
+    const group = requiredRecord(entry, `${label}[${index}]`);
+    const id = requiredString(group.id, `${label}[${index}].id`);
+    if (ids.has(id)) throw new ImportValidationError(`${label} contains duplicate group id: ${id}`);
+    ids.add(id);
+    const bladeGuids = parseGuids(group.bladeGuids, `${label}[${index}].bladeGuids`);
+    if (bladeGuids.length === 0) throw new ImportValidationError(`${label}[${index}].bladeGuids must contain at least one GUID`);
+    return {
+      id,
+      name: requiredString(group.name, `${label}[${index}].name`),
+      bladeGuids,
+    } satisfies BladeGroup;
+  });
+}
+
+function parseVec3(value: unknown, label: string): Vec3 {
+  if (!Array.isArray(value) || value.length !== 3) throw new ImportValidationError(`${label} must be a three-number array`);
+  return [
+    finiteNumber(value[0], `${label}[0]`),
+    finiteNumber(value[1], `${label}[1]`),
+    finiteNumber(value[2], `${label}[2]`),
+  ];
+}
+
+function parseWhatIfOverrides(value: unknown, label: string): readonly BladeWhatIfOverride[] {
+  if (value === undefined) return [];
+  if (!Array.isArray(value)) throw new ImportValidationError(`${label} must be an array`);
+  if (value.length > 10_000) throw new ImportValidationError(`${label} contains too many overrides`);
+  const guids = new Set<string>();
+  return value.map((entry, index) => {
+    const item = requiredRecord(entry, `${label}[${index}]`);
+    const guid = parseGuids([item.guid], `${label}[${index}].guid`)[0];
+    if (guids.has(guid)) throw new ImportValidationError(`${label} contains duplicate blade GUID: ${guid}`);
+    guids.add(guid);
+    if (item.flipped !== undefined && typeof item.flipped !== "boolean") throw new ImportValidationError(`${label}[${index}].flipped must be boolean`);
+    const result: BladeWhatIfOverride = {
+      guid,
+      flipped: item.flipped as boolean | undefined,
+      positionOffset: parseVec3(item.positionOffset, `${label}[${index}].positionOffset`),
+      rotationOffsetDegrees: parseVec3(item.rotationOffsetDegrees, `${label}[${index}].rotationOffsetDegrees`),
+    };
+    if (result.flipped === undefined && result.positionOffset.every((component) => component === 0) && result.rotationOffsetDegrees.every((component) => component === 0)) {
+      throw new ImportValidationError(`${label}[${index}] contains no active override`);
+    }
+    return result;
+  });
+}
+
+function parseOperatingPoint(value: unknown, label = "operatingPoint"): OperatingPoint {
+  const point = requiredRecord(value, label);
   const speed = finiteNumber(point.speed, "operatingPoint.speed");
   if (speed < 0) throw new ImportValidationError("operatingPoint.speed cannot be negative");
   return {
@@ -143,6 +209,66 @@ function parseOperatingPoint(value: unknown): OperatingPoint {
     q: finiteNumber(point.q, "operatingPoint.q"),
     r: finiteNumber(point.r, "operatingPoint.r"),
   };
+}
+
+function parseActiveMachine(value: unknown): "A" | "B" {
+  return value === "B" ? "B" : "A";
+}
+
+function parseSnapshotMachine(value: unknown, label: string): SnapshotMachineState {
+  const machine = requiredRecord(value, label);
+  const cgMode = machine.cgMode === undefined ? "auto" : machine.cgMode;
+  if (cgMode !== "auto") throw new ImportValidationError(`${label}.cgMode is unsupported`);
+  return {
+    machineName: requiredString(machine.machineName, `${label}.machineName`),
+    groupSelection: parseGroup(machine.groupSelection, `${label}.groupSelection`),
+    cgMode,
+    disabledBladeGuids: parseGuids(machine.disabledBladeGuids, `${label}.disabledBladeGuids`),
+    bladeGroups: parseBladeGroups(machine.bladeGroups, `${label}.bladeGroups`),
+    whatIfOverrides: parseWhatIfOverrides(machine.whatIfOverrides, `${label}.whatIfOverrides`),
+  };
+}
+
+function parseSnapshotState(value: unknown, label: string): AnalysisSessionState {
+  const state = requiredRecord(value, label);
+  const mode = parseMode(state.mode);
+  if (!Array.isArray(state.machines) || state.machines.length < 1 || state.machines.length > 2) {
+    throw new ImportValidationError(`${label}.machines must contain one or two records`);
+  }
+  if (mode === "single" && state.machines.length !== 1) throw new ImportValidationError(`${label}.machines must contain one record in single mode`);
+  if (mode === "compare" && state.machines.length !== 2) throw new ImportValidationError(`${label}.machines must contain two records in compare mode`);
+  const activeMachine = parseActiveMachine(state.activeMachine);
+  if (mode === "single" && activeMachine !== "A") throw new ImportValidationError(`${label}.activeMachine must be A in single mode`);
+  return {
+    mode,
+    activeMachine,
+    operatingPoint: parseOperatingPoint(state.operatingPoint, `${label}.operatingPoint`),
+    plotLab: normalizePlotLabState(state.plotLab),
+    showDeltaPercent: state.showDeltaPercent === true,
+    machines: state.machines.map((machine, index) => parseSnapshotMachine(machine, `${label}.machines[${index}]`)),
+  };
+}
+
+function parseSnapshots(value: unknown): readonly AnalysisSnapshot[] {
+  if (value === undefined) return [];
+  if (!Array.isArray(value)) throw new ImportValidationError("snapshots must be an array");
+  if (value.length > 200) throw new ImportValidationError("snapshots contains too many entries");
+  const ids = new Set<string>();
+  return value.map((entry, index) => {
+    const snapshot = requiredRecord(entry, `snapshots[${index}]`);
+    const id = requiredString(snapshot.id, `snapshots[${index}].id`);
+    if (ids.has(id)) throw new ImportValidationError(`snapshots contains duplicate id: ${id}`);
+    ids.add(id);
+    const createdAt = requiredString(snapshot.createdAt, `snapshots[${index}].createdAt`);
+    if (!Number.isFinite(Date.parse(createdAt))) throw new ImportValidationError(`snapshots[${index}].createdAt must be an ISO timestamp`);
+    return {
+      id,
+      name: requiredString(snapshot.name, `snapshots[${index}].name`),
+      note: typeof snapshot.note === "string" ? snapshot.note : "",
+      createdAt,
+      state: parseSnapshotState(snapshot.state, `snapshots[${index}].state`),
+    } satisfies AnalysisSnapshot;
+  });
 }
 
 function parseRange(value: unknown, fallback: PlotRange, label: string): PlotRange {
@@ -229,6 +355,8 @@ export function parseAnalysisImport(text: string): ImportedAnalysisState {
       name: requiredString(metadata.name, `machines[${index}].metadata.name`),
       groupSelection: parseGroup(selectedGroup.uiSelection, `machines[${index}].selectedAnalysisGroup.uiSelection`),
       disabledBladeGuids: parseGuids(blades.disabledGuids, `machines[${index}].blades.disabledGuids`),
+      bladeGroups: parseBladeGroups(blades.groups, `machines[${index}].blades.groups`),
+      whatIfOverrides: parseWhatIfOverrides(blades.whatIfOverrides, `machines[${index}].blades.whatIfOverrides`),
     } satisfies ImportedMachineState;
   });
   const ui = root.ui === undefined ? undefined : requiredRecord(root.ui, "ui");
@@ -238,6 +366,9 @@ export function parseAnalysisImport(text: string): ImportedAnalysisState {
     operatingPoint: parseOperatingPoint(requiredRecord(root.machines[0], "machines[0]").operatingPoint),
     precision: parsePrecision(ui?.precision),
     plotLab: normalizePlotLabState(ui?.plotLab),
+    activeMachine: parseActiveMachine(ui?.activeMachine),
+    showDeltaPercent: ui?.showDeltaPercent === true,
+    snapshots: parseSnapshots(root.snapshots),
     machines,
   };
 }

@@ -80,6 +80,23 @@ export interface Plot2DResult {
   readonly points: readonly Plot2DPoint[];
 }
 
+export interface ZeroContourSegment {
+  readonly from: readonly [number, number];
+  readonly to: readonly [number, number];
+}
+
+export interface TurnEquilibriumPoint {
+  readonly speed: number;
+  readonly q: number | null;
+}
+
+export interface QuasiSteadyTurnEstimate {
+  readonly speed: number;
+  readonly qRadiansPerSecond: number;
+  readonly qDegreesPerSecond: number;
+  readonly radiusGameUnits: number | null;
+}
+
 export const PLOT_INPUTS: Readonly<Record<PlotInputVariable, { label: string; shortLabel: string; units: string; defaultRange: PlotRange }>> = {
   speed: { label: "Speed", shortLabel: "Speed", units: "game units/s", defaultRange: { minimum: 0, maximum: 200, points: 41 } },
   alpha: { label: "Alpha · α", shortLabel: "Alpha", units: "degrees", defaultRange: { minimum: -15, maximum: 15, points: 31 } },
@@ -217,6 +234,93 @@ export function evaluatePlot2D(
     yValues,
     points,
   };
+}
+
+function zeroCrossing(firstCoordinate: number, firstValue: number, secondCoordinate: number, secondValue: number, epsilon = 1e-12): number | null {
+  if (![firstCoordinate, firstValue, secondCoordinate, secondValue].every(Number.isFinite)) return null;
+  const firstZero = Math.abs(firstValue) <= epsilon;
+  const secondZero = Math.abs(secondValue) <= epsilon;
+  if (firstZero && secondZero) return (firstCoordinate + secondCoordinate) / 2;
+  if (firstZero) return firstCoordinate;
+  if (secondZero) return secondCoordinate;
+  if (Math.sign(firstValue) === Math.sign(secondValue)) return null;
+  return firstCoordinate + (secondCoordinate - firstCoordinate) * (-firstValue) / (secondValue - firstValue);
+}
+
+export function turnEquilibriumCurve(result: Plot2DResult, referenceQ = 0): readonly TurnEquilibriumPoint[] {
+  if (result.config.xVariable !== "speed" || result.config.yVariable !== "q" || result.config.quantity !== "pitchMoment") {
+    throw new Error("Turn equilibrium requires Speed × q → Pitch moment data");
+  }
+  const columns = result.xValues.length;
+  return result.xValues.map((speed, xIndex) => {
+    const crossings: number[] = [];
+    for (let yIndex = 0; yIndex < result.yValues.length - 1; yIndex += 1) {
+      const firstValue = result.points[yIndex * columns + xIndex]?.value;
+      const secondValue = result.points[(yIndex + 1) * columns + xIndex]?.value;
+      if (firstValue === undefined || secondValue === undefined) continue;
+      const crossing = zeroCrossing(result.yValues[yIndex], firstValue, result.yValues[yIndex + 1], secondValue);
+      if (crossing !== null && !crossings.some((value) => Math.abs(value - crossing) <= 1e-10)) crossings.push(crossing);
+    }
+    const q = crossings.length === 0
+      ? null
+      : crossings.reduce((closest, candidate) => Math.abs(candidate - referenceQ) < Math.abs(closest - referenceQ) ? candidate : closest);
+    return { speed, q };
+  });
+}
+
+export function quasiSteadyTurnEstimate(result: Plot2DResult, speed: number, referenceQ = 0, epsilon = 1e-9): QuasiSteadyTurnEstimate | null {
+  if (!Number.isFinite(speed)) return null;
+  const curve = turnEquilibriumCurve(result, referenceQ);
+  const exact = curve.find((point) => Math.abs(point.speed - speed) <= epsilon);
+  let q = exact?.q ?? null;
+  if (!exact) {
+    const rightIndex = curve.findIndex((point) => point.speed > speed);
+    if (rightIndex <= 0) return null;
+    const left = curve[rightIndex - 1];
+    const right = curve[rightIndex];
+    if (left.q === null || right.q === null) return null;
+    q = left.q + (right.q - left.q) * (speed - left.speed) / (right.speed - left.speed);
+  }
+  if (q === null || !Number.isFinite(q)) return null;
+  return {
+    speed,
+    qRadiansPerSecond: q,
+    qDegreesPerSecond: q * 180 / Math.PI,
+    radiusGameUnits: Math.abs(q) <= epsilon ? null : Math.abs(speed / q),
+  };
+}
+
+function contourIntersection(first: Plot2DPoint, second: Plot2DPoint): readonly [number, number] | null {
+  const coordinate = zeroCrossing(0, first.value, 1, second.value);
+  if (coordinate === null) return null;
+  return [first.x + (second.x - first.x) * coordinate, first.y + (second.y - first.y) * coordinate];
+}
+
+export function zeroContourSegments(result: Plot2DResult): readonly ZeroContourSegment[] {
+  const columns = result.xValues.length;
+  const rows = result.yValues.length;
+  const segments: ZeroContourSegment[] = [];
+  for (let yIndex = 0; yIndex < rows - 1; yIndex += 1) {
+    for (let xIndex = 0; xIndex < columns - 1; xIndex += 1) {
+      const bottomLeft = result.points[yIndex * columns + xIndex];
+      const bottomRight = result.points[yIndex * columns + xIndex + 1];
+      const topRight = result.points[(yIndex + 1) * columns + xIndex + 1];
+      const topLeft = result.points[(yIndex + 1) * columns + xIndex];
+      if (!bottomLeft || !bottomRight || !topRight || !topLeft) continue;
+      const intersections = [
+        contourIntersection(bottomLeft, bottomRight),
+        contourIntersection(bottomRight, topRight),
+        contourIntersection(topRight, topLeft),
+        contourIntersection(topLeft, bottomLeft),
+      ].filter((point): point is readonly [number, number] => point !== null)
+        .filter((point, index, points) => points.findIndex((candidate) => Math.hypot(candidate[0] - point[0], candidate[1] - point[1]) <= 1e-10) === index);
+      if (intersections.length === 2) segments.push({ from: intersections[0], to: intersections[1] });
+      else if (intersections.length === 4) {
+        segments.push({ from: intersections[0], to: intersections[1] }, { from: intersections[2], to: intersections[3] });
+      }
+    }
+  }
+  return segments;
 }
 
 export function deltaValue(first: number, second: number): number {

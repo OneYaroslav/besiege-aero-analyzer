@@ -1,0 +1,101 @@
+{
+  "stepLabel": "Step {{current}} / {{total}}",
+  "back": "Back",
+  "next": "Next",
+  "skip": "Skip Tutorial",
+  "finish": "Finish Tutorial",
+  "openAircraft": "Open Aircraft",
+  "waiting": "Complete the highlighted action to continue.",
+  "complete": "Action complete. You can continue.",
+  "targetUnavailable": "Preparing this view…",
+  "steps": {
+    "program-overview": {
+      "title": "What Besiege Aero Analyzer Does",
+      "content": "Besiege Aero Analyzer reads an aircraft .bsg and calculates the forces and moments produced by its supported aerodynamic blades. It evaluates local static response and rotational damping response, builds standard sweeps and custom Plot Lab graphs, and shows which individual blades create each result. What-if tools let you disable, flip, move, or rotate blades virtually without editing the original .bsg."
+    },
+    "tutorial-aircraft": {
+      "title": "Built-in Tutorial Aircraft",
+      "content": "For this walkthrough the analyzer automatically loaded a built-in tutorial aircraft through the same BSG parser and solver used for your own files. Everything you do here is analytical session state. The bundled .bsg is not modified, so experimenting is safe."
+    },
+    "components": {
+      "title": "Components and Analysis Group",
+      "content": "A .bsg can contain more than the aircraft itself: logic blocks or a separate construction may be stored in the same Machine. Analysis Group decides which blocks participate in mass, center-of-gravity, and aerodynamic analysis. All means every block in the machine. Aircraft heuristic means the analyzer has estimated the main aircraft-shaped component; it is useful but not a verified runtime joint graph. The Components tab shows the inferred spatial components, their block/blade counts, mass, and approximate CG. Choosing the wrong group can shift CG and make calculated moments misleading or meaningless."
+    },
+    "viewer": {
+      "title": "3D Inspector",
+      "content": "The Inspector shows the selected aircraft component, its blocks and aerodynamic blades. Orbit, pan and zoom are visual tools only."
+    },
+    "operating-point": {
+      "title": "Operating Point",
+      "content": "Speed, Alpha, Beta and angular rates p, q and r define the motion state at which the solver evaluates the aircraft."
+    },
+    "current-state": {
+      "title": "Current Aerodynamic State",
+      "content": "FORCE: Fx is lateral force along +X right, Fy is vertical force along +Y up, and Fz is longitudinal force along +Z forward. The sign gives direction; the larger the absolute value, the stronger the total force along that axis.\n\nMOMENT: Roll, Pitch, and Yaw moment describe how strongly the aircraft currently tends to rotate about +Z, +X, and +Y respectively. The sign gives the moment direction; a larger absolute value means a stronger turning tendency about that axis.\n\nBLADE POWER: Σ F·v adds the force-dot-local-velocity value from every enabled blade. Positive means blade forces add mechanical energy in this game-specific measure; negative means they remove it. It is especially useful when investigating unusual Besiege behavior."
+    },
+    "static-response": {
+      "title": "Static Response",
+      "content": "A derivative is local sensitivity near the current operating point: it describes the nearby slope, not every possible flight state. dM_pitch/dAlpha tells how pitch moment changes when angle of attack changes. A larger absolute derivative means pitch moment reacts more strongly to Alpha. dM_yaw/dBeta tells how sensitive yaw moment is to sideslip Beta. dM_roll/dBeta tells how sensitive roll moment is to Beta. Positive and negative values give the numerical direction of each change, but this tutorial does not automatically label the aircraft stable or unstable from that sign alone."
+    },
+    "damping-response": {
+      "title": "Rotational Damping Response",
+      "content": "dM_roll/dp, dM_pitch/dq, and dM_yaw/dr show how roll, pitch, and yaw moment change when their matching angular rate changes near the current operating point. With the Analyzer conventions, a negative derivative means an additional moment opposite to a positive rotation rate. The larger its negative absolute magnitude, the stronger the aerodynamic damping in that mode. Current example: dM_pitch/dq = {{pitchDampingExample}} moment/(rad/s). If positive q increases slightly, this slope predicts an additional pitch-moment change in the negative direction when the value is negative."
+    },
+    "alpha-sweep": {
+      "title": "Alpha Sweep",
+      "content": "X is angle of attack α in degrees. Y is the quantity selected above the graph: a force component, moment, or blade power. This graph shows how that output changes when the incoming velocity tilts in the pitch plane. As α moves to the right, a rising curve means the selected Y value becomes more positive; a falling curve means it becomes more negative. A steeper curve means a small α change produces a larger Y change. A flatter curve means Y changes less. The plot reports the sign; it does not label the aircraft stable or unstable."
+    },
+    "pitch-q-sweep": {
+      "title": "Pitch Moment vs Pitch Rate q",
+      "content": "X is pitch angular rate q in rad/s about machine +X. Y is pitch moment about +X in game moment units. This graph shows the aerodynamic moment produced while pitch rate changes. Moving right means more positive q. If the curve rises, pitch moment becomes more positive; if it falls, pitch moment becomes more negative. A steeper slope means changing q changes pitch moment more strongly; a flatter slope means a weaker change. The local slope near the operating point is dM_pitch/dq."
+    },
+    "beta-sweep": {
+      "title": "Beta Sweep",
+      "content": "X is sideslip angle β in degrees: the incoming velocity is turned in the yaw plane. Y is the quantity selected above the graph. This graph shows how lateral velocity direction changes force, moment, or power. As β moves right, a rising curve means the selected Y value increases; a falling curve means it decreases. A steep slope means a small β change produces a large Y change. A flat slope means Y is less sensitive to β. No stable/unstable label is inferred from the curve alone."
+    },
+    "yaw-r-sweep": {
+      "title": "Yaw Moment vs Yaw Rate r",
+      "content": "X is yaw angular rate r in rad/s about machine +Y. Y is yaw moment about +Y in game moment units. This graph shows how the blades react while yaw rate changes. Farther right means more positive r. A rising curve means yaw moment becomes more positive; a falling curve means it becomes more negative. A steeper slope means yaw rate has a stronger effect on yaw moment; a flatter slope means a weaker effect. The local slope is dM_yaw/dr."
+    },
+    "roll-p-sweep": {
+      "title": "Roll Moment vs Roll Rate p",
+      "content": "X is roll angular rate p in rad/s about machine +Z. Y is roll moment about +Z in game moment units. This graph shows how roll moment changes as the aircraft rolls faster in either direction. Moving right means more positive p. A rising curve means roll moment increases; a falling curve means it decreases. A steeper slope means a small p change produces a larger roll-moment change; a flatter slope means a smaller response. The local slope is dM_roll/dp."
+    },
+    "plot-lab": {
+      "title": "Plot Lab",
+      "content": "Choose your own X variable and output series for a 1D plot, or sample two inputs as a 2D heatmap."
+    },
+    "blade-selection": {
+      "title": "Select a Blade",
+      "content": "Click one aerodynamic blade in the 3D view. Ctrl/Cmd toggles selection and Shift adds another blade."
+    },
+    "blade-groups": {
+      "title": "Create a Blade Group",
+      "content": "Select several related blades, enter a group name and choose Create from selection. Groups are stored by blade GUID."
+    },
+    "snapshot": {
+      "title": "Save a Baseline",
+      "content": "Save a Snapshot named Baseline. A snapshot stores configuration, then reruns the solver whenever it is restored or compared."
+    },
+    "what-if": {
+      "title": "What-if Change",
+      "content": "Disable the selected blades/group or apply a virtual transform. The analyzer recalculates everything without editing the .bsg."
+    },
+    "changed-analysis": {
+      "title": "Changed Analysis",
+      "content": "The sweeps and derivatives have been recalculated from the modified blade configuration. No stale result is used."
+    },
+    "snapshot-compare": {
+      "title": "Snapshot Compare",
+      "content": "Baseline is compared with Current. Delta is Current minus Baseline, and the configuration changes are listed below the table."
+    },
+    "extended-what-if": {
+      "title": "Extended What-if",
+      "content": "Flip changes the virtual flipped state. Move offsets blade position; Rotate offsets orientation. All use the existing solver inputs."
+    },
+    "finish": {
+      "title": "Tutorial Complete",
+      "content": "You can keep exploring this aircraft or open your own .bsg machine. The same workflow applies to every supported aircraft."
+    }
+  }
+}

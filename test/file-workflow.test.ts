@@ -23,11 +23,13 @@ function analysisJson(overrides: Record<string, unknown> = {}): string {
     machines: [{
       metadata: { name: "Test Machine" },
       selectedAnalysisGroup: { uiSelection: { kind: "component", index: 2 } },
-      blades: { disabledGuids: [VALID_GUID] },
+      blades: { disabledGuids: [VALID_GUID], groups: [{ id: "wing", name: "Wing blades", bladeGuids: [VALID_GUID] }], whatIfOverrides: [{ guid: VALID_GUID, flipped: true, positionOffset: [1, 2, 3], rotationOffsetDegrees: [4, 5, 6] }] },
       operatingPoint: { speed: 125, alphaDegrees: 3, betaDegrees: -2, p: 0.1, q: -0.2, r: 0.3 },
     }],
     ui: {
       precision: "6",
+      activeMachine: "A",
+      showDeltaPercent: true,
       plotLab: {
         mode: "2d",
         display: "delta",
@@ -41,6 +43,29 @@ function analysisJson(overrides: Record<string, unknown> = {}): string {
         heatQuantity: "pitchMoment",
       },
     },
+    snapshots: [{
+      id: "snapshot-1",
+      name: "Cruise",
+      note: "test state",
+      createdAt: "2026-08-22T12:00:00.000Z",
+      state: {
+        mode: "single",
+        activeMachine: "A",
+        operatingPoint: { speed: 130, alphaDegrees: 1, betaDegrees: 0, p: 0, q: 0.1, r: 0 },
+        plotLab: {
+          mode: "1d", display: "absolute", xVariable: "q", quantities: ["pitchMoment"],
+          range: { minimum: -0.5, maximum: 0.5, points: 7 }, x2Variable: "alpha", y2Variable: "q",
+          x2Range: { minimum: -10, maximum: 10, points: 11 }, y2Range: { minimum: -0.5, maximum: 0.5, points: 11 },
+          heatQuantity: "pitchMoment",
+        },
+        showDeltaPercent: false,
+        machines: [{
+          machineName: "Test Machine", groupSelection: { kind: "all" }, cgMode: "auto",
+          disabledBladeGuids: [VALID_GUID], bladeGroups: [{ id: "wing", name: "Wing blades", bladeGuids: [VALID_GUID] }],
+          whatIfOverrides: [{ guid: VALID_GUID, positionOffset: [0, 0, 1], rotationOffsetDegrees: [5, 0, 0] }],
+        }],
+      },
+    }],
     ...overrides,
   });
 }
@@ -54,6 +79,12 @@ test("analysis JSON import validates and restores serialized analysis/UI state",
   assert.deepEqual(imported.plotLab.quantities, ["pitchMoment", "bladePower"]);
   assert.deepEqual(imported.machines[0].groupSelection, { kind: "component", index: 2 });
   assert.deepEqual(imported.machines[0].disabledBladeGuids, [VALID_GUID]);
+  assert.equal(imported.machines[0].bladeGroups[0].name, "Wing blades");
+  assert.deepEqual(imported.machines[0].whatIfOverrides[0], { guid: VALID_GUID, flipped: true, positionOffset: [1, 2, 3], rotationOffsetDegrees: [4, 5, 6] });
+  assert.equal(imported.showDeltaPercent, true);
+  assert.equal(imported.snapshots[0].state.operatingPoint.speed, 130);
+  assert.deepEqual(imported.snapshots[0].state.machines[0].bladeGroups[0].bladeGuids, [VALID_GUID]);
+  assert.deepEqual(imported.snapshots[0].state.machines[0].whatIfOverrides[0].rotationOffsetDegrees, [5, 0, 0]);
 });
 
 test("analysis JSON import reports malformed, unsupported, and future schemas", () => {
@@ -61,6 +92,9 @@ test("analysis JSON import reports malformed, unsupported, and future schemas", 
   assert.throws(() => parseAnalysisImport(JSON.stringify({ format: "something-else" })), /Unsupported JSON format/);
   assert.throws(() => parseAnalysisImport(analysisJson({ analysisVersion: "99.0.0" })), /newer than supported/);
   assert.throws(() => parseAnalysisImport(analysisJson({ machines: [{ metadata: { name: "X" }, selectedAnalysisGroup: { uiSelection: { kind: "all" } }, blades: { disabledGuids: ["not-a-guid"] }, operatingPoint: { speed: 1, alphaDegrees: 0, betaDegrees: 0, p: 0, q: 0, r: 0 } }] })), ImportValidationError);
+  assert.throws(() => parseAnalysisImport(analysisJson({ machines: [{ metadata: { name: "X" }, selectedAnalysisGroup: { uiSelection: { kind: "all" } }, blades: { disabledGuids: [], whatIfOverrides: [{ guid: VALID_GUID, positionOffset: [0, "bad", 0], rotationOffsetDegrees: [0, 0, 0] }] }, operatingPoint: { speed: 1, alphaDegrees: 0, betaDegrees: 0, p: 0, q: 0, r: 0 } }] })), /positionOffset/);
+  assert.throws(() => parseAnalysisImport(analysisJson({ snapshots: [{ id: "bad", name: "Bad", createdAt: "not-a-date", state: {} }] })), /createdAt/);
+  assert.throws(() => parseAnalysisImport(analysisJson({ snapshots: [{ id: "bad", name: "Bad", createdAt: "2026-08-22T12:00:00.000Z", state: { mode: "compare", activeMachine: "A", operatingPoint: { speed: 1, alphaDegrees: 0, betaDegrees: 0, p: 0, q: 0, r: 0 }, machines: [] } }] })), /machines/);
 });
 
 test("CSV parser handles quotes, empty lines, units, and numeric column detection", () => {

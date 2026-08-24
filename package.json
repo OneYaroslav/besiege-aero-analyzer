@@ -1,6 +1,6 @@
 {
   "name": "besiege-aero-analyzer-poc",
-  "version": "0.1.0",
+  "version": "0.5.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -21,8 +21,10 @@
     "@tauri-apps/api": "^2.11.1",
     "@tauri-apps/plugin-dialog": "^2.7.2",
     "@tauri-apps/plugin-fs": "^2.5.1",
+    "i18next": "^26.4.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
+    "react-i18next": "^17.0.12",
     "recharts": "^3.10.1",
     "three": "^0.185.1"
   },

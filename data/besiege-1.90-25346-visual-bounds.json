@@ -1,0 +1,2190 @@
+{
+  "schemaVersion": 1,
+  "gameVersion": "1.90-25346",
+  "source": "Besiege_Data/level0 prefab renderer Mesh local AABBs transformed to block-root local frame",
+  "meshDataExtracted": false,
+  "blocks": [
+    {
+      "id": 0,
+      "type": "StartingBlock",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0011163800954818726,
+          0.0008385018445551395,
+          0.0
+        ],
+        "size": [
+          1.1273827739059925,
+          1.1273827739059925,
+          1.1273827739059925
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 1,
+      "type": "DoubleWoodenBlock",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          3.486871719526885e-06,
+          0.9476167261600492
+        ],
+        "size": [
+          1.056401014328003,
+          1.05768895149231,
+          2.2562065124511714
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 2,
+      "type": "Wheel",
+      "rootLocalRendererBounds": {
+        "center": [
+          8.097290891129205e-06,
+          -4.0826200926602496e-05,
+          0.05563900549437406
+        ],
+        "size": [
+          2.04746761136974,
+          2.0474667053791507,
+          1.00563944135952
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 3,
+      "type": "MetalBlade",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          0.001495128954983549,
+          1.8064045173273868
+        ],
+        "size": [
+          0.9949034079196366,
+          0.2027898631570807,
+          3.9099585275734325
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 4,
+      "type": "Decoupler",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          -3.0960856683970306e-08,
+          0.532225084761497
+        ],
+        "size": [
+          0.949128071036796,
+          0.9491282681817936,
+          1.1693937887324803
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 5,
+      "type": "Hinge",
+      "rootLocalRendererBounds": {
+        "center": [
+          1.6095512120339883e-06,
+          0.0,
+          0.43725869171755993
+        ],
+        "size": [
+          1.190505881605611,
+          1.0290767158650027,
+          1.2446828315373366
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 6,
+      "type": "MetalBall",
+      "rootLocalRendererBounds": {
+        "center": [
+          -0.028833508491516113,
+          0.023711979389190674,
+          0.992500603199005
+        ],
+        "size": [
+          2.8957509994506836,
+          2.4319500923156743,
+          2.5376248359680176
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 7,
+      "type": "Brace",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "size": [
+          0.4000000059604645,
+          0.4000000059604645,
+          2.0
+        ]
+      },
+      "rendererCount": 3,
+      "rendererGameObjects": [
+        "A",
+        "B",
+        "Cylinder"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 8,
+      "type": "Unused",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          -5.866982633051521e-08,
+          0.4571712398498064
+        ],
+        "size": [
+          1.0326650142669678,
+          1.0326647680604426,
+          1.290998627901331
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 9,
+      "type": "Spring",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "size": [
+          0.484732985496521,
+          0.484732985496521,
+          0.484732985496521
+        ]
+      },
+      "rendererCount": 2,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 10,
+      "type": "WoodenPanel",
+      "rootLocalRendererBounds": {
+        "center": [
+          -0.016141504049301147,
+          -0.7261331081390381,
+          0.16212598234415054
+        ],
+        "size": [
+          0.9966869950294495,
+          1.9965169429779053,
+          0.6574900150299072
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 11,
+      "type": "Cannon",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0010201099415474424,
+          -0.15775251355142506,
+          0.2692463511101265
+        ],
+        "size": [
+          1.0309762427729268,
+          3.085849028670077,
+          1.3988883503563934
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 12,
+      "type": "ScalingBlock",
+      "rootLocalRendererBounds": {
+        "center": [
+          1.9354686529027276e-06,
+          0.0,
+          0.5257990455409902
+        ],
+        "size": [
+          1.050981067023084,
+          1.0509770330999118,
+          1.0958814456325907
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 13,
+      "type": "SteeringBlock",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          -2.41518181953726e-07,
+          0.44431557240685127
+        ],
+        "size": [
+          1.0300307267254851,
+          1.0300331513041,
+          1.3014014675364503
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 14,
+      "type": "FlyingBlock",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.13761253161203513,
+          0.15736365752169945,
+          0.3957110643215216
+        ],
+        "size": [
+          1.9308214376515878,
+          2.3707194131906295,
+          1.6227990760287532
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 15,
+      "type": "SingleWoodenBlock",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          3.4868717193603516e-06,
+          0.46501299738883967
+        ],
+        "size": [
+          1.056401014328003,
+          1.0576889514923098,
+          1.290998935699463
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 16,
+      "type": "Suspension",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          5.551115123125783e-17,
+          0.8707408701812457
+        ],
+        "size": [
+          0.8102366328239441,
+          0.8102366328239444,
+          2.0615052194312966
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 17,
+      "type": "CircularSaw",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          -1.7232987914450604e-07,
+          0.00216245808412302
+        ],
+        "size": [
+          2.2930144743495475,
+          2.29301505621505,
+          0.8598447317863355
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 18,
+      "type": "Piston",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          6.29893068870846e-07,
+          -0.1301119898967924
+        ],
+        "size": [
+          0.8286529779434204,
+          0.8286574890194934,
+          2.060650782308434
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 19,
+      "type": "Swivel",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          -9.68750086260961e-07,
+          0.2778149986751156
+        ],
+        "size": [
+          1.1664811950424223,
+          1.1664845974360498,
+          1.553685512425419
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 20,
+      "type": "Spike",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          0.0,
+          1.055580984300832
+        ],
+        "size": [
+          0.5017344728801731,
+          0.5017344728801736,
+          2.622256617527455
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 21,
+      "type": "Flamethrower",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0017017308111238194,
+          0.0013511395997061748,
+          1.0282450159638898
+        ],
+        "size": [
+          0.7895106183836302,
+          0.8456744549254539,
+          2.3839448831876755
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 22,
+      "type": "SpinningBlock",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          -1.2718053121751893e-07,
+          0.28361559712943507
+        ],
+        "size": [
+          1.076375370382749,
+          1.0763762573862263,
+          1.5091448087662938
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 23,
+      "type": "Bomb",
+      "rootLocalRendererBounds": {
+        "center": [
+          -0.007993632418877183,
+          -0.025139092970931587,
+          0.9958620310384986
+        ],
+        "size": [
+          1.879014936872636,
+          1.9260891109519491,
+          1.5690597505388981
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 24,
+      "type": "ArmorPlateSmall",
+      "rootLocalRendererBounds": {
+        "center": [
+          -0.0009302496910095215,
+          0.00025075674057006836,
+          0.2082634828984737
+        ],
+        "size": [
+          0.9427574872970581,
+          0.9413985013961791,
+          0.2752375006675722
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 25,
+      "type": "Wing",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.8204191934060147,
+          -0.0006315335728211413,
+          2.6729832547586
+        ],
+        "size": [
+          3.284218392096353,
+          0.5659494443919216,
+          6.929809781938288
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 26,
+      "type": "Propeller",
+      "rootLocalRendererBounds": {
+        "center": [
+          3.3983967634432233e-07,
+          3.498295924192485e-07,
+          1.4986848139969002
+        ],
+        "size": [
+          0.6395847266480242,
+          0.40556518221840065,
+          3.301892329199523
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 27,
+      "type": "Grabber",
+      "rootLocalRendererBounds": {
+        "center": [
+          1.7485432567687642e-06,
+          7.53950715470797e-07,
+          0.6859766328332028
+        ],
+        "size": [
+          0.9595113637179618,
+          0.8557765958966949,
+          1.4893405934823278
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 28,
+      "type": "SteeringHinge",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          9.63692055017118e-07,
+          0.3724049954562825
+        ],
+        "size": [
+          0.9040716292091844,
+          0.9040752307713023,
+          1.3917756186902466
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 29,
+      "type": "ArmorPlateRound",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          -5.551115123125783e-17,
+          0.10478088671650809
+        ],
+        "size": [
+          1.6819514103004565,
+          1.6819514103004565,
+          0.7401517329795839
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 30,
+      "type": "BombHolder",
+      "rootLocalRendererBounds": {
+        "center": [
+          2.2232859058224363e-06,
+          0.0041987424715159705,
+          1.2219290545640304
+        ],
+        "size": [
+          2.3564696407720773,
+          2.3465551106576186,
+          2.4498325638672274
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 31,
+      "type": "FlameBall",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          0.0,
+          0.9691489934921265
+        ],
+        "size": [
+          1.6548839259178862,
+          1.654304919226377,
+          1.6550641352030482
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 32,
+      "type": "ArmorPlateLarge",
+      "rootLocalRendererBounds": {
+        "center": [
+          -0.0009302496910095215,
+          0.0002507567405700406,
+          0.1005129814147949
+        ],
+        "size": [
+          1.942757487297058,
+          0.9413985013961792,
+          0.4907385110855104
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 33,
+      "type": "Plow",
+      "rootLocalRendererBounds": {
+        "center": [
+          -0.015353832430192726,
+          -0.6456314553310563,
+          0.8680003516415958
+        ],
+        "size": [
+          3.3202899452583066,
+          2.2013678994283623,
+          1.654510727544596
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 34,
+      "type": "WingPanel",
+      "rootLocalRendererBounds": {
+        "center": [
+          4.768372150465439e-07,
+          0.0,
+          1.2008477449417114
+        ],
+        "size": [
+          3.606183481953508,
+          0.8711361135406506,
+          4.166443347930908
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 35,
+      "type": "Ballast",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          0.0,
+          0.47905677034806615
+        ],
+        "size": [
+          1.110333817803621,
+          1.1103335123593752,
+          1.1522199716632429
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 36,
+      "type": "Boulder",
+      "rootLocalRendererBounds": {
+        "center": [
+          -0.03555957004175525,
+          -0.014484092676724458,
+          0.9918654162765108
+        ],
+        "size": [
+          1.7239449565136056,
+          1.6585828637316813,
+          1.7444294781653298
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 37,
+      "type": "HalfPipe",
+      "rootLocalRendererBounds": {
+        "center": [
+          -1.4945453763459682e-09,
+          -5.055727358427298e-07,
+          0.6471910178664971
+        ],
+        "size": [
+          2.263914465434298,
+          1.9566928196511646,
+          1.7174088479801422
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 38,
+      "type": "CogMediumUnpowered",
+      "rootLocalRendererBounds": {
+        "center": [
+          3.993213124608985e-07,
+          1.2762716472547453e-06,
+          0.13721335787538302
+        ],
+        "size": [
+          2.907336317759479,
+          2.9073348772208534,
+          1.7617586866445196
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 39,
+      "type": "CogMediumPowered",
+      "rootLocalRendererBounds": {
+        "center": [
+          3.993213124608985e-07,
+          1.2762716472547453e-06,
+          0.1372133578753829
+        ],
+        "size": [
+          2.907336808972019,
+          2.9073350707234025,
+          1.7617586866450665
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 40,
+      "type": "WheelUnpowered",
+      "rootLocalRendererBounds": {
+        "center": [
+          1.642938633472646e-07,
+          -4.873173324870805e-07,
+          -0.023058397607323283
+        ],
+        "size": [
+          1.9512441064571027,
+          1.9512457188422367,
+          0.939998755203707
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 41,
+      "type": "WoodenPole",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          1.942890293094024e-16,
+          0.9269542694091795
+        ],
+        "size": [
+          0.836322009563446,
+          0.8363220095634465,
+          2.3553395271301265
+        ]
+      },
+      "rendererCount": 2,
+      "rendererGameObjects": [
+        "HalfVis",
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 42,
+      "type": "Slider",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          1.1443276703992922e-07,
+          -0.046013093234852365
+        ],
+        "size": [
+          1.1342663888333817,
+          1.1342666538688069,
+          2.226787872484294
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 43,
+      "type": "Balloon",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          0.0,
+          0.9752193568989612
+        ],
+        "size": [
+          2.5452672460800336,
+          2.507444767833142,
+          1.9504387137979224
+        ]
+      },
+      "rendererCount": 2,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 44,
+      "type": "BallJoint",
+      "rootLocalRendererBounds": {
+        "center": [
+          1.4463225310734629e-06,
+          5.551115123125783e-17,
+          0.3913752734634379
+        ],
+        "size": [
+          1.156867825534246,
+          1.1568629741668701,
+          1.312787754854544
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 45,
+      "type": "RopeWinch",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "size": [
+          0.5874037478675114,
+          0.5959102968636643,
+          2.0
+        ]
+      },
+      "rendererCount": 3,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 46,
+      "type": "LargeWheel",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          0.0,
+          0.28214672207832336
+        ],
+        "size": [
+          2.854599952697754,
+          2.854599952697754,
+          1.6775889396667485
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 47,
+      "type": "Torch",
+      "rootLocalRendererBounds": {
+        "center": [
+          2.868336501371527e-07,
+          0.2965646788720466,
+          0.2780997555855153
+        ],
+        "size": [
+          0.8046266651714411,
+          1.6253087705865852,
+          1.3625753598905215
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 48,
+      "type": "Drill",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.018069917490335652,
+          0.02352895773744007,
+          1.5853455651504302
+        ],
+        "size": [
+          1.6630323207110163,
+          1.5547755453454504,
+          3.3644682811445223
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 49,
+      "type": "GripPad",
+      "rootLocalRendererBounds": {
+        "center": [
+          -0.0019839616411641003,
+          -0.00014944277961603802,
+          0.10531601140200664
+        ],
+        "size": [
+          0.8951963480057685,
+          0.9176485851486404,
+          0.48933270031424314
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 50,
+      "type": "SmallWheel",
+      "rootLocalRendererBounds": {
+        "center": [
+          -1.4625337953211304e-07,
+          -0.04465680061407076,
+          0.6984775777443976
+        ],
+        "size": [
+          0.35745218984610316,
+          0.7442799806594851,
+          1.5253249323358935
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 51,
+      "type": "CogLargeUnpowered",
+      "rootLocalRendererBounds": {
+        "center": [
+          5.815187453350745e-06,
+          2.7722590618228793e-05,
+          0.15856386411779255
+        ],
+        "size": [
+          4.960616977744772,
+          4.960615939138013,
+          1.6964891311107262
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 52,
+      "type": "Unused3",
+      "rootLocalRendererBounds": {
+        "center": [
+          3.78313782461448e-05,
+          0.00014907361843616296,
+          1.0378441605995354
+        ],
+        "size": [
+          0.7733815827868614,
+          0.5552781170014771,
+          2.2079090408899886
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 53,
+      "type": "ShrapnelCannon",
+      "rootLocalRendererBounds": {
+        "center": [
+          -0.0035154373326149457,
+          -0.025824460162609864,
+          0.4306216888398196
+        ],
+        "size": [
+          1.2796567832655783,
+          1.8699741573762187,
+          1.4878363414682227
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 54,
+      "type": "Grenade",
+      "rootLocalRendererBounds": {
+        "center": [
+          2.674398462687577e-07,
+          -0.0028621414058633277,
+          0.8903235274235506
+        ],
+        "size": [
+          1.0683594266264294,
+          1.0700251059537185,
+          1.4761489397676257
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 55,
+      "type": "SmallPropeller",
+      "rootLocalRendererBounds": {
+        "center": [
+          3.766773058896944e-05,
+          0.00014939743918546133,
+          0.9574556451133934
+        ],
+        "size": [
+          0.7733818012034599,
+          0.5552787549766848,
+          2.047132009917703
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 56,
+      "type": "WaterCannon",
+      "rootLocalRendererBounds": {
+        "center": [
+          6.60823523401799e-08,
+          -0.04422529099646666,
+          0.587437564909777
+        ],
+        "size": [
+          0.8659783367160445,
+          2.02530073914112,
+          1.7284255685103667
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 57,
+      "type": "Pin",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          -0.03405626636113723,
+          0.0
+        ],
+        "size": [
+          0.31191925427052425,
+          0.6429675657526417,
+          0.3119191769790923
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 58,
+      "type": "CameraBlock",
+      "rootLocalRendererBounds": {
+        "center": [
+          -4.7683714526902676e-07,
+          1.0411101070140205e-07,
+          0.03514014589161035
+        ],
+        "size": [
+          1.220658777376399,
+          1.2206585413578492,
+          0.11662909978277114
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Target"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 59,
+      "type": "Rocket",
+      "rootLocalRendererBounds": {
+        "center": [
+          3.9641080362695646e-08,
+          0.3102714906071249,
+          0.621657484807902
+        ],
+        "size": [
+          0.9600411143788676,
+          2.0896449842895777,
+          0.9772479330957231
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 60,
+      "type": "LargeWheelUnpowered",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          1.58720166676396e-07,
+          0.15435472130775885
+        ],
+        "size": [
+          2.77742600440979,
+          2.7859623445294144,
+          1.4220054078036501
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 61,
+      "type": "Crossbow",
+      "rootLocalRendererBounds": {
+        "center": [
+          -8.949637413024902e-05,
+          0.008073521661572158,
+          0.18285000324249268
+        ],
+        "size": [
+          1.7948150634765625,
+          2.5987470149993896,
+          1.047652006149292
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 62,
+      "type": "Vacuum",
+      "rootLocalRendererBounds": {
+        "center": [
+          -0.0002752721023475402,
+          -0.062057498001975575,
+          0.38208570200903
+        ],
+        "size": [
+          0.9305206208129477,
+          2.164100670782531,
+          1.4270666858646148
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 63,
+      "type": "Log",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.022614508867263794,
+          -0.002088725566863847,
+          1.477103769779205
+        ],
+        "size": [
+          1.2122759819030762,
+          1.080829501152039,
+          3.3326606750488277
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 64,
+      "type": "Magnet",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.001794249745522336,
+          0.0024422898938016857,
+          0.5104240204620432
+        ],
+        "size": [
+          1.0823851725581903,
+          1.0999101011848469,
+          1.3114409863513856
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 65,
+      "type": "Sensor",
+      "rootLocalRendererBounds": {
+        "center": [
+          -0.03215664928267614,
+          -0.3917578597962148,
+          0.11679867543215039
+        ],
+        "size": [
+          0.9258748500704428,
+          1.7201526501114586,
+          1.6402767991818337
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 66,
+      "type": "Timer",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          0.04884740714891134,
+          0.3020841415958264
+        ],
+        "size": [
+          0.900463376443355,
+          0.9888216796245164,
+          0.9116629003138499
+        ]
+      },
+      "rendererCount": 3,
+      "rendererGameObjects": [
+        "Dial",
+        "Hand",
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 67,
+      "type": "Altimeter",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0011501936188551554,
+          -4.470348358154297e-07,
+          0.17544427209070945
+        ],
+        "size": [
+          1.2454617579191307,
+          1.2454617579191307,
+          0.8078434620059016
+        ]
+      },
+      "rendererCount": 3,
+      "rendererGameObjects": [
+        "Dial",
+        "Hand",
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 68,
+      "type": "LogicGate",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          0.0,
+          0.3536146423686316
+        ],
+        "size": [
+          1.2274402651796237,
+          1.3080940638117795,
+          1.062871321152809
+        ]
+      },
+      "rendererCount": 3,
+      "rendererGameObjects": [
+        "A",
+        "B",
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 69,
+      "type": "Anglometer",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          -5.551115123125783e-17,
+          0.16755079916087823
+        ],
+        "size": [
+          1.3101264467658496,
+          1.3101264467658496,
+          0.8299331259827343
+        ]
+      },
+      "rendererCount": 3,
+      "rendererGameObjects": [
+        "Dial",
+        "Hand",
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 70,
+      "type": "Speedometer",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          0.17338799516389972,
+          0.18241024164807124
+        ],
+        "size": [
+          1.3143439993733708,
+          1.1208648206042116,
+          0.919489639781972
+        ]
+      },
+      "rendererCount": 3,
+      "rendererGameObjects": [
+        "Dial",
+        "Hand",
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 71,
+      "type": "BuildNode",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          0.0,
+          1.1920928955078125e-07
+        ],
+        "size": [
+          0.28505098819732666,
+          0.28505098819732666,
+          0.7599352598190308
+        ]
+      },
+      "rendererCount": 2,
+      "rendererGameObjects": [
+        "BuildNode"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 72,
+      "type": "BuildEdge",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          0.0,
+          1.1920928955078125e-07
+        ],
+        "size": [
+          0.28505098819732666,
+          0.28505098819732666,
+          0.7599352598190308
+        ]
+      },
+      "rendererCount": 4,
+      "rendererGameObjects": [
+        "VisHandle",
+        "VisLine"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 73,
+      "type": "BuildSurface",
+      "rootLocalRendererBounds": {
+        "center": [
+          -2.2369534491417653e-07,
+          0.0,
+          -2.2369534491417653e-07
+        ],
+        "size": [
+          3.25099548733057,
+          0.16146022826671214,
+          3.25099638211195
+        ]
+      },
+      "rendererCount": 4,
+      "rendererGameObjects": [
+        "DragVisualiser"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 74,
+      "type": "SqrBalloon",
+      "rootLocalRendererBounds": {
+        "center": [
+          -3.5762786865234375e-07,
+          -1.7881393432617188e-07,
+          1.4857630729675293
+        ],
+        "size": [
+          3.096604585647583,
+          3.0860657691955566,
+          3.0832090377807617
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 75,
+      "type": "RopeMeasure",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "size": [
+          0.11249999701976776,
+          0.11249999701976776,
+          2.0
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 76,
+      "type": "Axle",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          0.0,
+          0.3681396245956421
+        ],
+        "size": [
+          0.8436696529388428,
+          0.7511532306671143,
+          1.3858752250671387
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 77,
+      "type": "MetalJaw",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.014163464307785034,
+          0.18215599656105042,
+          0.6435418725013733
+        ],
+        "size": [
+          1.602447509765625,
+          0.7800727486610413,
+          1.72215735912323
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 78,
+      "type": "Sail",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          0.0,
+          1.5
+        ],
+        "size": [
+          1.5,
+          2.220446049250313e-16,
+          1.5
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 79,
+      "type": "Rudder",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.012000005692243576,
+          0.37257403133432376,
+          0.8556679053173184
+        ],
+        "size": [
+          0.5112617918112328,
+          1.3224095954764437,
+          2.000229134268011
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 80,
+      "type": "NauticalScrew",
+      "rootLocalRendererBounds": {
+        "center": [
+          -0.000914740598787489,
+          -0.003608300829263611,
+          0.3748102440742543
+        ],
+        "size": [
+          1.3005922166741755,
+          1.288881348327053,
+          1.5116263601212836
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 81,
+      "type": "Paddle",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          0.0,
+          0.42054837942123413
+        ],
+        "size": [
+          1.1941320896148682,
+          0.34785598516464233,
+          2.189476728439331
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 82,
+      "type": "Buoyancy",
+      "rootLocalRendererBounds": {
+        "center": [
+          -0.0007230377035654101,
+          0.0010621833563853045,
+          0.4973848028393526
+        ],
+        "size": [
+          1.0815487047683732,
+          1.168959705927378,
+          1.060338541624617
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 83,
+      "type": "BigBarrel",
+      "rootLocalRendererBounds": {
+        "center": [
+          1.0907649993896484e-05,
+          -0.0016365647315979004,
+          1.5
+        ],
+        "size": [
+          3.0421571731567383,
+          3.0421571731567383,
+          3.0084195137023926
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 84,
+      "type": "Harpoon",
+      "rootLocalRendererBounds": {
+        "center": [
+          -0.08627479104806923,
+          -0.346187949180603,
+          0.3374067544937134
+        ],
+        "size": [
+          1.3356803422890096,
+          3.6332285404205322,
+          1.8846600055694585
+        ]
+      },
+      "rendererCount": 4,
+      "rendererGameObjects": [
+        "RopeCoil",
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 85,
+      "type": "CornerWoodenBlock",
+      "rootLocalRendererBounds": {
+        "center": [
+          3.367662429754059e-06,
+          0.5237598419189453,
+          0.971240222454071
+        ],
+        "size": [
+          1.0576891899108891,
+          2.1039204597473145,
+          2.1039204597473145
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 86,
+      "type": "SkateWheel",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          0.0003360062837601263,
+          -0.1784529909491539
+        ],
+        "size": [
+          1.2415820360183716,
+          0.8532780408859254,
+          0.8569059818983078
+        ]
+      },
+      "rendererCount": 2,
+      "rendererGameObjects": [
+        "Truck",
+        "Wheel"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 87,
+      "type": "BouncyPad",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0012264996767044067,
+          0.00451698899269104,
+          0.08949200063943863
+        ],
+        "size": [
+          0.7928509712219238,
+          0.7985399961471558,
+          0.5463060140609741
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 88,
+      "type": "FlyWheel",
+      "rootLocalRendererBounds": {
+        "center": [
+          -0.01928931474685669,
+          -0.0008769035339355469,
+          0.08475053310394287
+        ],
+        "size": [
+          2.0277442932128906,
+          2.059999942779541,
+          1.0638630390167236
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 89,
+      "type": "DragBlock",
+      "rootLocalRendererBounds": {
+        "center": [
+          -0.0014649033546447754,
+          -0.28982508182525635,
+          0.4603348970413208
+        ],
+        "size": [
+          1.05829656124115,
+          0.7643368244171143,
+          1.2536811828613281
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 90,
+      "type": "Booster",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.014568954706192017,
+          -0.026223987340927124,
+          0.5251214690506458
+        ],
+        "size": [
+          1.0469722747802734,
+          0.9865636229515076,
+          1.2986512184143066
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 91,
+      "type": "SteeringThruster",
+      "rootLocalRendererBounds": {
+        "center": [
+          -0.009488001465797424,
+          0.0,
+          0.21970850229263306
+        ],
+        "size": [
+          0.6273460388183594,
+          0.9469580054283142,
+          0.969228982925415
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 92,
+      "type": "FuelBarrel",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          0.0,
+          0.5
+        ],
+        "size": [
+          1.2303780317306519,
+          1.2303780317306519,
+          1.3187079429626465
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 93,
+      "type": "FuelGauge",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          0.0,
+          0.10579651594161987
+        ],
+        "size": [
+          0.3503040075302124,
+          0.9630540013313292,
+          0.5622130036354067
+        ]
+      },
+      "rendererCount": 4,
+      "rendererGameObjects": [
+        "Dial",
+        "Hand",
+        "Vis",
+        "glass"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 94,
+      "type": "GridFin",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          -0.07298500090837479,
+          0.6803075075149536
+        ],
+        "size": [
+          0.9903439879417419,
+          0.48607802391052246,
+          1.7537469863891602
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 95,
+      "type": "SteeringFin",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          -0.37571102380752563,
+          0.48601850867271423
+        ],
+        "size": [
+          0.38800400495529175,
+          2.0724658966064453,
+          1.1264530420303345
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 96,
+      "type": "FuelLine",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0038051865994930267,
+          0.0,
+          2.4557114013390446e-05
+        ],
+        "size": [
+          0.24477621912956238,
+          0.2485521286725998,
+          1.9999996483325901
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 97,
+      "type": "Parachute",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.00564885139465332,
+          0.0,
+          0.0
+        ],
+        "size": [
+          1.0169601440429688,
+          0.9398713707923889,
+          2.0
+        ]
+      },
+      "rendererCount": 4,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 98,
+      "type": "FuelCoupler",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0004684925079345703,
+          0.0,
+          0.615094006061554
+        ],
+        "size": [
+          1.3723390102386475,
+          1.0588560104370117,
+          1.5488959550857544
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 99,
+      "type": "FuelBarrelBig",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          0.0,
+          1.4999953508377075
+        ],
+        "size": [
+          2.9182424545288086,
+          2.9182424545288086,
+          3.1763503551483154
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 100,
+      "type": "SpaceWheel",
+      "rootLocalRendererBounds": {
+        "center": [
+          -1.9669532775878906e-06,
+          0.0,
+          0.7488524913787842
+        ],
+        "size": [
+          2.134429931640625,
+          2.1490941047668457,
+          2.1272950172424316
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 101,
+      "type": "ReactionSteeringBlock",
+      "rootLocalRendererBounds": {
+        "center": [
+          0.0,
+          0.0,
+          0.288039593220347
+        ],
+        "size": [
+          1.244631976554274,
+          0.4416192120554925,
+          0.7881960032611488
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    },
+    {
+      "id": 102,
+      "type": "FuelCannon",
+      "rootLocalRendererBounds": {
+        "center": [
+          -0.008050531148910522,
+          0.0,
+          1.6322613954544067
+        ],
+        "size": [
+          0.8504136800765991,
+          0.9971103668212891,
+          3.4298624992370605
+        ]
+      },
+      "rendererCount": 1,
+      "rendererGameObjects": [
+        "Vis"
+      ],
+      "provenance": "prefab-renderer-aabb"
+    }
+  ]
+}

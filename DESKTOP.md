@@ -56,7 +56,7 @@ npm run tauri build
 Release artifacts:
 
 - portable/direct executable: `src-tauri\target\release\besiege-aero-analyzer.exe`;
-- NSIS installer: `src-tauri\target\release\bundle\nsis\Besiege Aero Analyzer_0.1.0_x64-setup.exe`.
+- NSIS installer: `src-tauri\target\release\bundle\nsis\Besiege Aero Analyzer_0.5.0_x64-setup.exe`.
 
 The direct executable can be started without installation on a Windows system with WebView2. The NSIS package installs for the current user and checks/downloads WebView2 when needed. Neither artifact is code-signed in this PoC, so Windows SmartScreen may show an unknown-publisher warning.
 
@@ -69,6 +69,7 @@ The direct executable can be started without installation on a Windows system wi
 - Analysis JSON and Plot Lab JSON/CSV exports use native Windows **Save As** dialogs in desktop mode. JSON/CSV imports use native Windows **Open** dialogs.
 - The same actions keep browser-mode file-picker/download fallbacks; React components use one shared file-I/O adapter rather than Tauri checks.
 - Physics, mass model, derivatives, sweeps, what-if masks, comparisons and Three.js all execute inside the local webview.
+- The 3D Inspector automatically loads the versioned geometry-only prefab cache from `%LOCALAPPDATA%` when it exists. Build it from the locally installed game with `extract-mesh-cache.ps1`; see `MESH_CACHE.md`. Generated game meshes are not bundled or committed.
 - The app has no remote server, external API or Rust calculation backend.
 - `localStorage` contains only UI preferences. Machines are not persisted.
 
@@ -90,6 +91,6 @@ The browser and desktop builds use the same frontend output. CLI use through `ru
 - Analysis JSON stores analysis/UI state, not the source `.bsg`; deferred restore still requires the user to open the matching machine file.
 - Imported CSV overlays currently target Plot Lab 1D. Re-importing a 2D `x,y,value` CSV as a heatmap is not implemented yet.
 - The executable and installer are unsigned.
-- The 3D view intentionally uses engineering placeholders, not Besiege meshes.
+- The 3D view uses geometry-only Besiege prefab meshes for 90 verified vanilla IDs when the local cache is present, including exact full/short WoodenPole and Log variants selected from BSG `length`. Browser mode, missing caches and the remaining runtime/procedural IDs keep engineering fallbacks. Textures/materials/skins are intentionally unavailable.
 - Physics limitations documented in `UI.md`, `ANALYSIS.md` and `POC.md` are unchanged.
 - No runtime exporter, exact inertia, runtime joint graph, multibody simulation or new aerodynamic law is included.

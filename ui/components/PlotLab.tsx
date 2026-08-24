@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   CartesianGrid,
   Legend,
@@ -19,6 +20,7 @@ import {
   evaluatePlot2D,
   formatPlot1DCsv,
   formatPlot2DCsv,
+  quasiSteadyTurnEstimate,
   type HeatmapQuantity,
   type Plot1DConfig,
   type Plot1DResult,
@@ -30,6 +32,7 @@ import {
   type PlotRange,
   type PlotMode,
   type CompareDisplay,
+  type QuasiSteadyTurnEstimate,
 } from "../../src/plot-lab.ts";
 import type { ImportedDataset } from "../../src/file-workflow.ts";
 import { formatNumber, type PrecisionMode, type UiAnalysisBundle } from "../../src/ui-model.ts";
@@ -52,6 +55,8 @@ interface Evaluation {
   readonly second1D?: Plot1DResult;
   readonly first2D?: Plot2DResult;
   readonly second2D?: Plot2DResult;
+  readonly firstTurnMoment2D?: Plot2DResult;
+  readonly secondTurnMoment2D?: Plot2DResult;
   readonly elapsedMs?: number;
   readonly error?: string;
   readonly computing: boolean;
@@ -59,7 +64,6 @@ interface Evaluation {
 
 interface Preset {
   readonly key: string;
-  readonly label: string;
   readonly mode: PlotMode;
   readonly x: PlotInputVariable;
   readonly y?: PlotInputVariable;
@@ -67,14 +71,15 @@ interface Preset {
 }
 
 const PRESETS: readonly Preset[] = [
-  { key: "pitch-stability", label: "Pitch stability", mode: "1d", x: "alpha", quantity: "pitchMoment" },
-  { key: "pitch-damping", label: "Pitch damping", mode: "1d", x: "q", quantity: "pitchMoment" },
-  { key: "yaw-stability", label: "Yaw stability", mode: "1d", x: "beta", quantity: "yawMoment" },
-  { key: "yaw-damping", label: "Yaw damping", mode: "1d", x: "r", quantity: "yawMoment" },
-  { key: "roll-damping", label: "Roll damping", mode: "1d", x: "p", quantity: "rollMoment" },
-  { key: "energy-aoa", label: "Energy vs AoA", mode: "1d", x: "alpha", quantity: "bladePower" },
-  { key: "pitch-state-map", label: "Pitch state map", mode: "2d", x: "alpha", y: "q", quantity: "pitchMoment" },
-  { key: "energy-map", label: "Energy map", mode: "2d", x: "speed", y: "alpha", quantity: "bladePower" },
+  { key: "pitch-stability", mode: "1d", x: "alpha", quantity: "pitchMoment" },
+  { key: "pitch-damping", mode: "1d", x: "q", quantity: "pitchMoment" },
+  { key: "yaw-stability", mode: "1d", x: "beta", quantity: "yawMoment" },
+  { key: "yaw-damping", mode: "1d", x: "r", quantity: "yawMoment" },
+  { key: "roll-damping", mode: "1d", x: "p", quantity: "rollMoment" },
+  { key: "energy-aoa", mode: "1d", x: "alpha", quantity: "bladePower" },
+  { key: "pitch-state-map", mode: "2d", x: "alpha", y: "q", quantity: "pitchMoment" },
+  { key: "energy-map", mode: "2d", x: "speed", y: "alpha", quantity: "bladePower" },
+  { key: "turn-analysis", mode: "2d", x: "speed", y: "q", quantity: "pitchMoment" },
 ];
 
 const SERIES_COLORS = ["#6fd1ef", "#f0ab69", "#8bcfa8", "#b8a7ed", "#e28aa7", "#d4dbe1"] as const;
@@ -97,12 +102,13 @@ function heatmapDomain(results: readonly Plot2DResult[]): readonly [number, numb
 }
 
 function RangeEditor({ label, range, units, onChange }: { label: string; range: PlotRange; units: string; onChange: (range: PlotRange) => void }) {
+  const { t } = useTranslation("plotlab");
   return (
     <fieldset className="plot-range-fieldset">
       <legend>{label} <small>{units}</small></legend>
-      <label className="numeric-field"><span>Min</span><input aria-label={`${label} minimum`} type="number" value={range.minimum} onChange={(event) => onChange({ ...range, minimum: Number(event.target.value) })} /></label>
-      <label className="numeric-field"><span>Max</span><input aria-label={`${label} maximum`} type="number" value={range.maximum} onChange={(event) => onChange({ ...range, maximum: Number(event.target.value) })} /></label>
-      <label className="numeric-field"><span>Points</span><input aria-label={`${label} point count`} type="number" min="2" max="501" step="1" value={range.points} onChange={(event) => onChange({ ...range, points: Number(event.target.value) })} /></label>
+      <label className="numeric-field"><span>{t("range.min")}</span><input aria-label={t("range.minimum", { label })} type="number" value={range.minimum} onChange={(event) => onChange({ ...range, minimum: Number(event.target.value) })} /></label>
+      <label className="numeric-field"><span>{t("range.max")}</span><input aria-label={t("range.maximum", { label })} type="number" value={range.maximum} onChange={(event) => onChange({ ...range, maximum: Number(event.target.value) })} /></label>
+      <label className="numeric-field"><span>{t("range.points")}</span><input aria-label={t("range.pointCount", { label })} type="number" min="2" max="501" step="1" value={range.points} onChange={(event) => onChange({ ...range, points: Number(event.target.value) })} /></label>
     </fieldset>
   );
 }
@@ -116,6 +122,8 @@ function PlotLineChart({ first, second, display, firstName, secondName, precisio
   precision: PrecisionMode;
   importedDatasets: readonly ImportedDataset[];
 }) {
+  const { t } = useTranslation("plotlab");
+  const translatedUnits = (units: string) => t(`units.${units}`, { defaultValue: units });
   const quantities = first.config.quantities;
   const visibleImportedSeries = importedDatasets.filter((dataset) => dataset.visible).flatMap((dataset) => dataset.series.map((series) => ({ dataset, series })));
   const allUnits = [...new Set([...quantities.map((quantity) => PLOT_QUANTITIES[quantity].units), ...visibleImportedSeries.map(({ series }) => series.units)])];
@@ -142,32 +150,33 @@ function PlotLineChart({ first, second, display, firstName, secondName, precisio
   const data = [...rows.values()].sort((a, b) => a.x - b.x);
   const axisId = (quantity: PlotQuantity) => PLOT_QUANTITIES[quantity].units;
   const xMeta = PLOT_INPUTS[first.config.variable];
+  const xLabel = t(`inputs.${first.config.variable}`);
   return (
     <div className="chart-wrap plot-lab-chart-wrap">
       <ResponsiveContainer width="100%" height="100%"><LineChart data={data} margin={{ top: 16, right: unitGroups.length > 1 ? 82 : 20, bottom: 12, left: 10 }}>
         <CartesianGrid stroke="#202c36" strokeDasharray="2 5" vertical={false} />
-        <XAxis dataKey="x" stroke="#738392" tick={{ fontSize: 11 }} label={{ value: `${xMeta.label} · ${xMeta.units}`, position: "insideBottomRight", offset: -3, fill: "#81909e", fontSize: 10 }} />
+        <XAxis dataKey="x" stroke="#738392" tick={{ fontSize: 11 }} label={{ value: `${xLabel} · ${translatedUnits(xMeta.units)}`, position: "insideBottomRight", offset: -3, fill: "#81909e", fontSize: 10 }} />
         {unitGroups.map((units, index) => <YAxis key={units} yAxisId={units} orientation={index === 0 ? "left" : "right"} stroke={index === 0 ? "#738392" : "#9a816d"} tick={{ fontSize: 11 }} tickFormatter={(value) => formatNumber(Number(value), precision)} width={78} />)}
         <ReferenceLine x={0} stroke="#596a78" strokeWidth={1.25} />
         {unitGroups.map((units) => <ReferenceLine key={units} yAxisId={units} y={0} stroke="#596a78" strokeWidth={1.25} />)}
-        <Tooltip contentStyle={{ background: "#0b1117", border: "1px solid #3a4a57", borderRadius: 2, fontFamily: "ui-monospace, monospace", fontSize: 12 }} labelStyle={{ color: "#dce6ed", marginBottom: 6 }} formatter={(value, name) => [formatNumber(Number(value), precision), String(name)]} labelFormatter={(value) => `${xMeta.label} = ${value} ${xMeta.units}`} />
+        <Tooltip contentStyle={{ background: "#0b1117", border: "1px solid #3a4a57", borderRadius: 2, fontFamily: "ui-monospace, monospace", fontSize: 12 }} labelStyle={{ color: "#dce6ed", marginBottom: 6 }} formatter={(value, name) => [formatNumber(Number(value), precision), String(name)]} labelFormatter={(value) => `${xLabel} = ${value} ${translatedUnits(xMeta.units)}`} />
         {(quantities.length > 1 || second || visibleImportedSeries.length > 0) && <Legend wrapperStyle={{ fontSize: 11 }} />}
-        {!second && quantities.map((quantity, index) => <Line connectNulls key={quantity} type="linear" yAxisId={axisId(quantity)} dataKey={`single-${quantity}`} name={PLOT_QUANTITIES[quantity].label} stroke={SERIES_COLORS[index % SERIES_COLORS.length]} strokeWidth={2} dot={false} isAnimationActive={false} />)}
+        {!second && quantities.map((quantity, index) => <Line connectNulls key={quantity} type="linear" yAxisId={axisId(quantity)} dataKey={`single-${quantity}`} name={t(`quantities.${quantity}`)} stroke={SERIES_COLORS[index % SERIES_COLORS.length]} strokeWidth={2} dot={false} isAnimationActive={false} />)}
         {second && display === "absolute" && quantities.flatMap((quantity) => [
           <Line connectNulls key={`a-${quantity}`} type="linear" yAxisId={axisId(quantity)} dataKey={`a-${quantity}`} name={`A · ${firstName}`} stroke="#6fd1ef" strokeWidth={2} dot={false} isAnimationActive={false} />,
           <Line connectNulls key={`b-${quantity}`} type="linear" yAxisId={axisId(quantity)} dataKey={`b-${quantity}`} name={`B · ${secondName}`} stroke="#f0ab69" strokeWidth={2} dot={false} isAnimationActive={false} />,
         ])}
-        {second && display === "delta" && quantities.map((quantity) => <Line connectNulls key={`delta-${quantity}`} type="linear" yAxisId={axisId(quantity)} dataKey={`delta-${quantity}`} name="Delta · B − A" stroke="#dce6ed" strokeWidth={2} dot={false} isAnimationActive={false} />)}
+        {second && display === "delta" && quantities.map((quantity) => <Line connectNulls key={`delta-${quantity}`} type="linear" yAxisId={axisId(quantity)} dataKey={`delta-${quantity}`} name={t("deltaSeries")} stroke="#dce6ed" strokeWidth={2} dot={false} isAnimationActive={false} />)}
         {visibleImportedSeries.map(({ dataset, series }, index) => <Line connectNulls key={series.id} type="linear" yAxisId={axisForUnits(series.units)} dataKey={`imported-${series.id}`} name={`${dataset.name} · ${series.name}`} stroke={SERIES_COLORS[(index + 3) % SERIES_COLORS.length]} strokeWidth={1.75} strokeDasharray="6 3" dot={{ r: 2 }} isAnimationActive={false} />)}
       </LineChart></ResponsiveContainer>
     </div>
   );
 }
 
-function fixedStateText(bundle: UiAnalysisBundle, excluded: readonly PlotInputVariable[], precision: PrecisionMode): string {
+function fixedStateText(bundle: UiAnalysisBundle, excluded: readonly PlotInputVariable[], precision: PrecisionMode, speedLabel: string): string {
   const state = bundle.report.state;
   const values: Readonly<Record<PlotInputVariable, string>> = {
-    speed: `speed ${formatNumber(state.speed, precision)}`,
+    speed: `${speedLabel} ${formatNumber(state.speed, precision)}`,
     alpha: `α ${formatNumber(state.alpha * 180 / Math.PI, precision)}°`,
     beta: `β ${formatNumber(state.beta * 180 / Math.PI, precision)}°`,
     p: `p ${formatNumber(state.p, precision)}`,
@@ -177,7 +186,45 @@ function fixedStateText(bundle: UiAnalysisBundle, excluded: readonly PlotInputVa
   return (Object.keys(values) as PlotInputVariable[]).filter((key) => !excluded.includes(key)).map((key) => values[key]).join(" · ");
 }
 
+function TurnEstimatePanel({ first, second, firstName, secondName, precision, speed }: {
+  first: QuasiSteadyTurnEstimate | null;
+  second?: QuasiSteadyTurnEstimate | null;
+  firstName: string;
+  secondName?: string;
+  precision: PrecisionMode;
+  speed: number;
+}) {
+  const { t } = useTranslation("plotlab");
+  const value = (estimate: QuasiSteadyTurnEstimate | null | undefined, key: "qRadiansPerSecond" | "qDegreesPerSecond" | "radiusGameUnits") => {
+    const result = estimate?.[key];
+    return result === null || result === undefined ? t("turn.na") : formatNumber(result, precision);
+  };
+  const delta = (key: "qRadiansPerSecond" | "qDegreesPerSecond" | "radiusGameUnits") => {
+    const a = first?.[key];
+    const b = second?.[key];
+    if (a === null || a === undefined || b === null || b === undefined) return t("turn.na");
+    const difference = b - a;
+    return `${difference > 0 ? "+" : ""}${formatNumber(difference, precision)}`;
+  };
+  const columns = second ? [
+    { key: "A", name: firstName, estimate: first },
+    { key: "B", name: secondName ?? "B", estimate: second },
+  ] : [{ key: "", name: firstName, estimate: first }];
+  return <section className="data-panel turn-estimate-panel">
+    <div className="turn-estimate-heading"><div><span className="panel-kicker">{t("turn.estimateKicker")}</span><strong>{t("turn.estimateTitle")}</strong></div><small>{t("turn.atSpeed", { speed: formatNumber(speed, precision) })}</small></div>
+    <div className="turn-estimate-grid">
+      {columns.map((column) => <div key={column.key || column.name} className={column.key ? `machine-${column.key.toLowerCase()}` : ""}><span>{column.key ? `${column.key} · ${column.name}` : column.name}</span><dl><div><dt>q_eq</dt><dd>{value(column.estimate, "qRadiansPerSecond")}</dd><small>rad/s</small></div><div><dt>q_eq</dt><dd>{value(column.estimate, "qDegreesPerSecond")}</dd><small>deg/s</small></div><div><dt>R</dt><dd>{value(column.estimate, "radiusGameUnits")}</dd><small>{t("turn.gameUnits")}</small></div></dl></div>)}
+      {second && <div className="turn-estimate-delta"><span>{t("turn.delta")}</span><dl><div><dt>Δ q_eq</dt><dd>{delta("qRadiansPerSecond")}</dd><small>rad/s</small></div><div><dt>Δ q_eq</dt><dd>{delta("qDegreesPerSecond")}</dd><small>deg/s</small></div><div><dt>Δ R</dt><dd>{delta("radiusGameUnits")}</dd><small>{t("turn.gameUnits")}</small></div></dl></div>}
+    </div>
+    <p>{t("turn.estimateNote")}</p>
+  </section>;
+}
+
 export function PlotLab({ first, second, precision, state, onStateChange, importedDatasets, onImportedDatasetsChange }: PlotLabProps) {
+  const { t } = useTranslation(["plotlab", "common"]);
+  const inputLabel = (value: PlotInputVariable): string => t(`inputs.${value}` as never);
+  const quantityLabel = (value: PlotQuantity): string => t(`quantities.${value}` as never);
+  const translatedUnits = (units: string): string => t(`units.${units}`, { defaultValue: units });
   const { mode: plotMode, display, xVariable, quantities, range, x2Variable, y2Variable, x2Range, y2Range, heatQuantity } = state;
   const setPlotMode = (value: PlotMode) => onStateChange({ ...state, mode: value });
   const setDisplay = (value: CompareDisplay) => onStateChange({ ...state, display: value });
@@ -196,6 +243,7 @@ export function PlotLab({ first, second, precision, state, onStateChange, import
   const effectiveQuantities = useMemo(() => second ? quantities.slice(0, 1) : quantities, [quantities, second]);
   const config1D = useMemo<Plot1DConfig>(() => ({ variable: xVariable, ...range, quantities: effectiveQuantities }), [effectiveQuantities, range, xVariable]);
   const config2D = useMemo<Plot2DConfig>(() => ({ xVariable: x2Variable, yVariable: y2Variable, xRange: x2Range, yRange: y2Range, quantity: heatQuantity }), [heatQuantity, x2Range, x2Variable, y2Range, y2Variable]);
+  const turnAnalysis = plotMode === "2d" && x2Variable === "speed" && y2Variable === "q" && (heatQuantity === "pitchMoment" || heatQuantity === "bladePower");
 
   useEffect(() => {
     let cancelled = false;
@@ -210,14 +258,17 @@ export function PlotLab({ first, second, precision, state, onStateChange, import
         } else {
           const first2D = evaluatePlot2D(first.report.blades, first.report.state, config2D);
           const second2D = second ? evaluatePlot2D(second.report.blades, second.report.state, config2D) : undefined;
-          if (!cancelled) setEvaluation({ first2D, second2D, elapsedMs: performance.now() - started, computing: false });
+          const momentConfig = turnAnalysis && config2D.quantity !== "pitchMoment" ? { ...config2D, quantity: "pitchMoment" as const } : config2D;
+          const firstTurnMoment2D = turnAnalysis ? (momentConfig === config2D ? first2D : evaluatePlot2D(first.report.blades, first.report.state, momentConfig)) : undefined;
+          const secondTurnMoment2D = turnAnalysis && second ? (momentConfig === config2D ? second2D : evaluatePlot2D(second.report.blades, second.report.state, momentConfig)) : undefined;
+          if (!cancelled) setEvaluation({ first2D, second2D, firstTurnMoment2D, secondTurnMoment2D, elapsedMs: performance.now() - started, computing: false });
         }
       } catch (cause) {
         if (!cancelled) setEvaluation({ error: cause instanceof Error ? cause.message : String(cause), computing: false });
       }
     }, 0);
     return () => { cancelled = true; window.clearTimeout(timer); };
-  }, [config1D, config2D, first, plotMode, second]);
+  }, [config1D, config2D, first, plotMode, second, turnAnalysis]);
 
   const availableAdditions = (Object.keys(PLOT_QUANTITIES) as PlotQuantity[]).filter((quantity) => !quantities.includes(quantity));
   const candidateQuantity = availableAdditions.includes(addQuantity) ? addQuantity : availableAdditions[0];
@@ -226,6 +277,12 @@ export function PlotLab({ first, second, precision, state, onStateChange, import
   const second2D = evaluation.second2D;
   const delta2D = first2D && second2D ? deltaHeatmap(first2D, second2D) : undefined;
   const absoluteDomain = first2D ? heatmapDomain(second2D ? [first2D, second2D] : [first2D]) : undefined;
+  const turnEstimateA = evaluation.firstTurnMoment2D ? quasiSteadyTurnEstimate(evaluation.firstTurnMoment2D, first.report.state.speed, first.report.state.q) : null;
+  const turnEstimateB = evaluation.secondTurnMoment2D && second ? quasiSteadyTurnEstimate(evaluation.secondTurnMoment2D, second.report.state.speed, second.report.state.q) : null;
+  const turnContours = turnAnalysis && first2D ? [
+    { result: first2D, label: second ? `A · ${first.report.machine.name} · 0` : `${quantityLabel(heatQuantity)} = 0`, color: "#b9f1ff" },
+    ...(second2D && second ? [{ result: second2D, label: `B · ${second.report.machine.name} · 0`, color: "#ffc17f", dashed: true }] : []),
+  ] : undefined;
   const visibleImported = importedDatasets.filter((dataset) => dataset.visible);
   const calculatedUnits = new Set(effectiveQuantities.map((quantity) => PLOT_QUANTITIES[quantity].units));
   const importedUnitWarning = visibleImported.some((dataset) => dataset.xUnits !== "unknown" && dataset.xUnits !== PLOT_INPUTS[xVariable].units)
@@ -303,9 +360,9 @@ export function PlotLab({ first, second, precision, state, onStateChange, import
     if (!csv) return;
     try {
       const saved = await getFileIo().saveTextFile({ content: csv, suggestedName: safeFileName(suggestedName), filter: CSV_FILE_FILTER });
-      if (saved) flashExport(`Saved: ${saved.path ?? saved.name}`);
+      if (saved) flashExport(t("plotlab:files.saved", { path: saved.path ?? saved.name }));
     } catch (cause) {
-      flashExport(`Save failed: ${cause instanceof Error ? cause.message : String(cause)}`);
+      flashExport(t("plotlab:files.failed", { error: cause instanceof Error ? cause.message : String(cause) }));
     }
   }
 
@@ -335,62 +392,68 @@ export function PlotLab({ first, second, precision, state, onStateChange, import
         suggestedName: safeFileName(`${prefix}-${PLOT_INPUTS[x2Variable].shortLabel}-${PLOT_INPUTS[y2Variable].shortLabel}-${PLOT_QUANTITIES[heatQuantity].label}.json`),
         filter: JSON_FILE_FILTER,
       });
-      if (saved) flashExport(`Saved: ${saved.path ?? saved.name}`);
+      if (saved) flashExport(t("plotlab:files.saved", { path: saved.path ?? saved.name }));
     } catch (cause) {
-      flashExport(`Save failed: ${cause instanceof Error ? cause.message : String(cause)}`);
+      flashExport(t("plotlab:files.failed", { error: cause instanceof Error ? cause.message : String(cause) }));
     }
   }
 
   return (
-    <div className="view-stack plot-lab">
+    <div className="view-stack plot-lab" data-tutorial="plot-lab">
       <section className="data-panel plot-lab-header">
-        <div><span className="panel-kicker">PLOT LAB</span><strong>Arbitrary solver sweeps</strong><small>Inputs not assigned to plot axes remain fixed at the current operating point.</small></div>
-        <label className="inline-select preset-select">Preset<select aria-label="Plot Lab preset" defaultValue="" onChange={(event) => { applyPreset(event.target.value); event.target.value = ""; }}><option value="" disabled>Choose…</option>{PRESETS.map((preset) => <option key={preset.key} value={preset.key}>{preset.label}</option>)}</select></label>
-        <div className="segmented compact" aria-label="Plot mode"><button className={plotMode === "1d" ? "active" : ""} onClick={() => setPlotMode("1d")}>1D PLOT</button><button className={plotMode === "2d" ? "active" : ""} onClick={() => setPlotMode("2d")}>2D SWEEP</button></div>
-        {second && <div className="segmented compact" aria-label="Compare display"><button className={display === "absolute" ? "active" : ""} onClick={() => setDisplay("absolute")}>ABSOLUTE</button><button className={display === "delta" ? "active" : ""} onClick={() => setDisplay("delta")}>DELTA</button></div>}
-        <div className="plot-export-actions">{exportMessage && <span role="status">{exportMessage}</span>}<button className="secondary-button" disabled={evaluation.computing || Boolean(evaluation.error)} onClick={exportCsv}>Export CSV</button>{plotMode === "2d" && <button className="secondary-button" disabled={evaluation.computing || Boolean(evaluation.error)} onClick={exportJson}>Export JSON</button>}</div>
+        <div><span className="panel-kicker">PLOT LAB</span><strong>{t("plotlab:subtitle")}</strong><small>{t("plotlab:fixedInputs")}</small></div>
+        <label className="inline-select preset-select">{t("plotlab:preset")}<select aria-label={t("plotlab:presetAria")} defaultValue="" onChange={(event) => { applyPreset(event.target.value); event.target.value = ""; }}><option value="" disabled>{t("plotlab:choose")}</option>{PRESETS.map((preset) => <option key={preset.key} value={preset.key}>{t(`presets.${preset.key}` as never)}</option>)}</select></label>
+        <div className="segmented compact" aria-label={t("plotlab:mode")}><button className={plotMode === "1d" ? "active" : ""} onClick={() => setPlotMode("1d")}>{t("plotlab:plot1d")}</button><button className={plotMode === "2d" ? "active" : ""} onClick={() => setPlotMode("2d")}>{t("plotlab:sweep2d")}</button></div>
+        {second && <div className="segmented compact" aria-label={t("plotlab:compareDisplay")}><button className={display === "absolute" ? "active" : ""} onClick={() => setDisplay("absolute")}>{t("plotlab:absolute")}</button><button className={display === "delta" ? "active" : ""} onClick={() => setDisplay("delta")}>DELTA</button></div>}
+        <div className="plot-export-actions">{exportMessage && <span role="status">{exportMessage}</span>}<button className="secondary-button" disabled={evaluation.computing || Boolean(evaluation.error)} onClick={exportCsv}>{t("common:actions.export")} CSV</button>{plotMode === "2d" && <button className="secondary-button" disabled={evaluation.computing || Boolean(evaluation.error)} onClick={exportJson}>{t("common:actions.export")} JSON</button>}</div>
       </section>
 
       {plotMode === "1d" ? <>
         <section className="data-panel plot-lab-controls plot-lab-controls-1d">
-          <label className="select-field"><span>X variable</span><select value={xVariable} onChange={(event) => change1DVariable(event.target.value as PlotInputVariable)}>{Object.entries(PLOT_INPUTS).map(([key, input]) => <option key={key} value={key}>{input.label}</option>)}</select></label>
-          <label className="select-field"><span>{second ? "Y quantity" : "Primary Y series"}</span><select value={quantities[0]} onChange={(event) => { const next = event.target.value as PlotQuantity; setQuantities([next, ...quantities.slice(1).filter((quantity) => quantity !== next)]); }}>{Object.entries(PLOT_QUANTITIES).map(([key, output]) => <option key={key} value={key}>{output.label}</option>)}</select></label>
-          {!second && <div className="plot-add-series"><label className="select-field"><span>Additional series</span><select aria-label="Additional Y series" value={candidateQuantity ?? ""} onChange={(event) => setAddQuantity(event.target.value as PlotQuantity)}>{availableAdditions.map((quantity) => <option key={quantity} value={quantity}>{PLOT_QUANTITIES[quantity].label}</option>)}</select></label><button className="secondary-button" disabled={!candidateQuantity || quantities.length >= 6 || [...new Set([...quantities, candidateQuantity].map((item) => PLOT_QUANTITIES[item].units))].length > 2} onClick={addSeries}>Add series</button></div>}
-          <RangeEditor label="X range" range={range} units={PLOT_INPUTS[xVariable].units} onChange={setRange} />
+          <label className="select-field"><span>{t("plotlab:xVariable")}</span><select value={xVariable} onChange={(event) => change1DVariable(event.target.value as PlotInputVariable)}>{Object.keys(PLOT_INPUTS).map((key) => <option key={key} value={key}>{inputLabel(key as PlotInputVariable)}</option>)}</select></label>
+          <label className="select-field"><span>{second ? t("plotlab:yQuantity") : t("plotlab:primarySeries")}</span><select value={quantities[0]} onChange={(event) => { const next = event.target.value as PlotQuantity; setQuantities([next, ...quantities.slice(1).filter((quantity) => quantity !== next)]); }}>{Object.keys(PLOT_QUANTITIES).map((key) => <option key={key} value={key}>{quantityLabel(key as PlotQuantity)}</option>)}</select></label>
+          {!second && <div className="plot-add-series"><label className="select-field"><span>{t("plotlab:additionalSeries")}</span><select aria-label={t("plotlab:additionalSeries")} value={candidateQuantity ?? ""} onChange={(event) => setAddQuantity(event.target.value as PlotQuantity)}>{availableAdditions.map((quantity) => <option key={quantity} value={quantity}>{quantityLabel(quantity)}</option>)}</select></label><button className="secondary-button" disabled={!candidateQuantity || quantities.length >= 6 || [...new Set([...quantities, candidateQuantity].map((item) => PLOT_QUANTITIES[item].units))].length > 2} onClick={addSeries}>{t("plotlab:addSeries")}</button></div>}
+          <RangeEditor label={t("plotlab:xRange")} range={range} units={translatedUnits(PLOT_INPUTS[xVariable].units)} onChange={setRange} />
         </section>
-        <section className="data-panel plot-series-strip"><div><span>ACTIVE SERIES</span>{effectiveQuantities.map((quantity, index) => <button key={quantity} className="series-chip" style={{ borderColor: SERIES_COLORS[index % SERIES_COLORS.length] }} onClick={() => { if (!second && quantities.length > 1) setQuantities(quantities.filter((item) => item !== quantity)); }} title={!second && quantities.length > 1 ? "Remove series" : undefined}>{PLOT_QUANTITIES[quantity].label}{!second && quantities.length > 1 ? " ×" : ""}</button>)}</div><small>{second ? "Compare uses the same quantity for A and B." : unitGroups.length > 1 ? "Two unit families: secondary Y axis enabled." : PLOT_QUANTITIES[effectiveQuantities[0]].units}</small></section>
+        <section className="data-panel plot-series-strip"><div><span>{t("plotlab:activeSeries")}</span>{effectiveQuantities.map((quantity, index) => <button key={quantity} className="series-chip" style={{ borderColor: SERIES_COLORS[index % SERIES_COLORS.length] }} onClick={() => { if (!second && quantities.length > 1) setQuantities(quantities.filter((item) => item !== quantity)); }} title={!second && quantities.length > 1 ? t("plotlab:removeSeries") : undefined}>{quantityLabel(quantity)}{!second && quantities.length > 1 ? " ×" : ""}</button>)}</div><small>{second ? t("plotlab:compareSame") : unitGroups.length > 1 ? t("plotlab:twoUnits") : translatedUnits(PLOT_QUANTITIES[effectiveQuantities[0]].units)}</small></section>
         {importedDatasets.length > 0 && <section className="data-panel imported-datasets">
-          <div className="imported-datasets-heading"><div><span className="panel-kicker">IMPORTED DATASETS</span><strong>External CSV overlays</strong></div><small>Visualization only · never passed to the physics solver</small></div>
+          <div className="imported-datasets-heading"><div><span className="panel-kicker">{t("plotlab:imported.title")}</span><strong>{t("plotlab:imported.subtitle")}</strong></div><small>{t("plotlab:imported.visualOnly")}</small></div>
           <div className="imported-dataset-list">{importedDatasets.map((dataset) => <div className="imported-dataset-row" key={dataset.id}>
-            <label title="Show or hide dataset"><input type="checkbox" checked={dataset.visible} onChange={(event) => updateImportedDataset(dataset.id, { visible: event.target.checked })} /></label>
-            <input aria-label={`Dataset name ${dataset.sourceFileName}`} value={dataset.name} onChange={(event) => updateImportedDataset(dataset.id, { name: event.target.value })} />
-            <span>{dataset.series.length} series · X: {dataset.xColumn} [{dataset.xUnits}]</span>
+            <label title={t("plotlab:imported.showHide")}><input type="checkbox" checked={dataset.visible} onChange={(event) => updateImportedDataset(dataset.id, { visible: event.target.checked })} /></label>
+            <input aria-label={t("plotlab:datasetNameAria", { file: dataset.sourceFileName })} value={dataset.name} onChange={(event) => updateImportedDataset(dataset.id, { name: event.target.value })} />
+            <span>{t("plotlab:imported.series", { count: dataset.series.length, x: dataset.xColumn, units: dataset.xUnits })}</span>
             <small title={dataset.sourceFileName}>{dataset.sourceFileName}</small>
-            <button className="secondary-button" onClick={() => onImportedDatasetsChange(importedDatasets.filter((candidate) => candidate.id !== dataset.id))}>Remove</button>
+            <button className="secondary-button" onClick={() => onImportedDatasetsChange(importedDatasets.filter((candidate) => candidate.id !== dataset.id))}>{t("common:actions.remove")}</button>
           </div>)}</div>
-          {importedUnitWarning && <div className="unit-warning">Imported units are unknown or differ from the calculated series. Values are plotted without conversion or normalization.</div>}
-          {second && display === "delta" && visibleImported.length > 0 && <div className="unit-warning">Compare Delta applies only to calculated Machine B − Machine A series. Imported CSV series remain raw absolute values.</div>}
+          {importedUnitWarning && <div className="unit-warning">{t("plotlab:imported.unitWarning")}</div>}
+          {second && display === "delta" && visibleImported.length > 0 && <div className="unit-warning">{t("plotlab:imported.deltaWarning")}</div>}
         </section>}
         <section className="chart-panel plot-lab-chart">
-          <div className="chart-title"><div><span>{effectiveQuantities.map((quantity) => PLOT_QUANTITIES[quantity].label).join(" + ")} vs {PLOT_INPUTS[xVariable].label} <InfoTooltip label="About Plot Lab 1D">Each X sample replaces only the selected input. Derivative series run the existing central-difference stability solver at every sample.</InfoTooltip></span><small>Fixed: {fixedStateText(first, [xVariable], precision)}</small></div><span className="plot-calc-status">{evaluation.computing ? "Calculating…" : evaluation.elapsedMs === undefined ? "" : `${formatNumber(evaluation.elapsedMs, "3")} ms`}</span></div>
+          <div className="chart-title"><div><span>{effectiveQuantities.map(quantityLabel).join(" + ")} {t("plotlab:versus")} {inputLabel(xVariable)} <InfoTooltip label={t("plotlab:about1d")}>{t("plotlab:help1d")}</InfoTooltip></span><small>{t("plotlab:fixed")}: {fixedStateText(first, [xVariable], precision, inputLabel("speed"))}</small></div><span className="plot-calc-status">{evaluation.computing ? t("plotlab:calculating") : evaluation.elapsedMs === undefined ? "" : `${formatNumber(evaluation.elapsedMs, "3")} ms`}</span></div>
           {evaluation.error ? <div className="plot-error" role="alert">{evaluation.error}</div> : evaluation.first1D && <PlotLineChart first={evaluation.first1D} second={evaluation.second1D} display={display} firstName={first.report.machine.name} secondName={second?.report.machine.name} precision={precision} importedDatasets={importedDatasets} />}
-          {second && <div className="delta-direction">{display === "delta" ? "Displaying Delta = Machine B − Machine A" : "Absolute A/B values · Delta direction is B − A"}</div>}
+          {second && <div className="delta-direction">{display === "delta" ? t("plotlab:displayDelta") : t("plotlab:absoluteHelp")}</div>}
         </section>
       </> : <>
+        {turnAnalysis && <section className="data-panel turn-analysis-panel">
+          <div className="turn-analysis-title"><div><span className="panel-kicker">{t("turn.kicker")}</span><strong>{t("turn.title")} <InfoTooltip label={t("turn.about")}>{t("turn.tooltip")}</InfoTooltip></strong><small>{t("turn.subtitle")}</small></div>
+          <div className="segmented compact" aria-label={t("turn.view")}><button className={heatQuantity === "pitchMoment" ? "active" : ""} onClick={() => setHeatQuantity("pitchMoment")}>{t("turn.momentView")}</button><button className={heatQuantity === "bladePower" ? "active" : ""} onClick={() => setHeatQuantity("bladePower")}>{t("turn.energyView")}</button></div></div>
+          <div className="turn-analysis-help"><span>{t("turn.helpRate")}</span><span>{t("turn.helpRadius")}</span><span>{t("turn.helpMomentZero")}</span><span>{t("turn.helpPower")}</span></div>
+        </section>}
         <section className="data-panel plot-lab-controls plot-lab-controls-2d">
-          <label className="select-field"><span>X variable</span><select value={x2Variable} onChange={(event) => change2DVariable("x", event.target.value as PlotInputVariable)}>{Object.entries(PLOT_INPUTS).map(([key, input]) => <option key={key} value={key} disabled={key === y2Variable}>{input.label}</option>)}</select></label>
-          <label className="select-field"><span>Y variable</span><select value={y2Variable} onChange={(event) => change2DVariable("y", event.target.value as PlotInputVariable)}>{Object.entries(PLOT_INPUTS).map(([key, input]) => <option key={key} value={key} disabled={key === x2Variable}>{input.label}</option>)}</select></label>
-          <label className="select-field"><span>Value / Z quantity</span><select value={heatQuantity} onChange={(event) => setHeatQuantity(event.target.value as HeatmapQuantity)}>{HEATMAP_QUANTITIES.map((quantity) => <option key={quantity} value={quantity}>{PLOT_QUANTITIES[quantity].label}</option>)}</select></label>
-          <RangeEditor label="X axis" range={x2Range} units={PLOT_INPUTS[x2Variable].units} onChange={setX2Range} />
-          <RangeEditor label="Y axis" range={y2Range} units={PLOT_INPUTS[y2Variable].units} onChange={setY2Range} />
+          <label className="select-field"><span>{t("plotlab:xVariable")}</span><select value={x2Variable} onChange={(event) => change2DVariable("x", event.target.value as PlotInputVariable)}>{Object.keys(PLOT_INPUTS).map((key) => <option key={key} value={key} disabled={key === y2Variable}>{inputLabel(key as PlotInputVariable)}</option>)}</select></label>
+          <label className="select-field"><span>{t("plotlab:yVariable")}</span><select value={y2Variable} onChange={(event) => change2DVariable("y", event.target.value as PlotInputVariable)}>{Object.keys(PLOT_INPUTS).map((key) => <option key={key} value={key} disabled={key === x2Variable}>{inputLabel(key as PlotInputVariable)}</option>)}</select></label>
+          <label className="select-field"><span>{t("plotlab:zQuantity")}</span><select value={heatQuantity} onChange={(event) => setHeatQuantity(event.target.value as HeatmapQuantity)}>{HEATMAP_QUANTITIES.map((quantity) => <option key={quantity} value={quantity}>{quantityLabel(quantity)}</option>)}</select></label>
+          <RangeEditor label={t("plotlab:xAxis")} range={x2Range} units={translatedUnits(PLOT_INPUTS[x2Variable].units)} onChange={setX2Range} />
+          <RangeEditor label={t("plotlab:yAxis")} range={y2Range} units={translatedUnits(PLOT_INPUTS[y2Variable].units)} onChange={setY2Range} />
         </section>
-        <section className="data-panel plot-grid-summary"><div><span>GRID</span><strong>{x2Range.points} × {y2Range.points}</strong><small>{x2Range.points * y2Range.points} solver states · default 31 × 31</small></div><div><span>VALUE</span><strong>{PLOT_QUANTITIES[heatQuantity].label}</strong><small>{PLOT_QUANTITIES[heatQuantity].units}</small></div><div><span>FIXED STATE</span><strong>{fixedStateText(first, [x2Variable, y2Variable], precision)}</strong><small>Only X and Y are replaced at each cell.</small></div><div className="plot-calc-status">{evaluation.computing ? "Calculating grid…" : evaluation.elapsedMs === undefined ? "" : `${formatNumber(evaluation.elapsedMs, "3")} ms`}</div></section>
+        <section className="data-panel plot-grid-summary"><div><span>{t("plotlab:grid")}</span><strong>{x2Range.points} × {y2Range.points}</strong><small>{t("plotlab:gridStates", { count: x2Range.points * y2Range.points })}</small></div><div><span>{t("plotlab:value")}</span><strong>{quantityLabel(heatQuantity)}</strong><small>{translatedUnits(PLOT_QUANTITIES[heatQuantity].units)}</small></div><div><span>{t("plotlab:fixedState")}</span><strong>{fixedStateText(first, [x2Variable, y2Variable], precision, inputLabel("speed"))}</strong><small>{t("plotlab:cellHelp")}</small></div><div className="plot-calc-status">{evaluation.computing ? t("plotlab:calculatingGrid") : evaluation.elapsedMs === undefined ? "" : `${formatNumber(evaluation.elapsedMs, "3")} ms`}</div></section>
         {evaluation.error ? <div className="plot-error" role="alert">{evaluation.error}</div> : first2D && <div className={`heatmap-grid ${second2D && display === "absolute" ? "compare" : ""}`}>
-          {(!second2D || display === "absolute") && <HeatmapChart title={second2D ? `A · ${first.report.machine.name}` : first.report.machine.name} result={first2D} precision={precision} domain={absoluteDomain} tone="A" />}
-          {second2D && display === "absolute" && <HeatmapChart title={`B · ${second?.report.machine.name}`} result={second2D} precision={precision} domain={absoluteDomain} tone="B" />}
-          {second2D && display === "delta" && delta2D && <HeatmapChart title="Delta · B − A" result={delta2D} precision={precision} tone="delta" />}
+          {(!second2D || display === "absolute") && <HeatmapChart title={second2D ? `A · ${first.report.machine.name}` : first.report.machine.name} result={first2D} precision={precision} domain={absoluteDomain} tone="A" contours={turnContours} />}
+          {second2D && display === "absolute" && <HeatmapChart title={`B · ${second?.report.machine.name}`} result={second2D} precision={precision} domain={absoluteDomain} tone="B" contours={turnContours} />}
+          {second2D && display === "delta" && delta2D && <HeatmapChart title={t("plotlab:deltaSeries")} result={delta2D} precision={precision} tone="delta" contours={turnContours} />}
         </div>}
-        {second && <div className="delta-direction">{display === "delta" ? "Displaying Delta = Machine B − Machine A" : "Absolute heatmaps share one color domain · Delta direction is B − A"}</div>}
+        {turnAnalysis && evaluation.firstTurnMoment2D && <TurnEstimatePanel first={turnEstimateA} second={second ? turnEstimateB : undefined} firstName={first.report.machine.name} secondName={second?.report.machine.name} precision={precision} speed={first.report.state.speed} />}
+        {second && <div className="delta-direction">{display === "delta" ? t("plotlab:displayDelta") : t("plotlab:heatmapAbsoluteHelp")}</div>}
       </>}
     </div>
   );

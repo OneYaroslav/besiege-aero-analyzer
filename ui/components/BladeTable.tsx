@@ -1,5 +1,7 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type MouseEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { buildBladeRows, formatNumber, type PrecisionMode, type UiAnalysisBundle } from "../../src/ui-model.ts";
+import { updateBladeSelection } from "../../src/inspector.ts";
 import { InfoTooltip } from "./InfoTooltip.tsx";
 
 type SortKey = "index" | "type" | "guid" | "x" | "y" | "z" | "flipped" | "fx" | "fy" | "fz" | "roll" | "pitch" | "yaw" | "power";
@@ -10,7 +12,7 @@ interface BladeTableProps {
   readonly selectedGuids: ReadonlySet<string>;
   readonly focusedGuid?: string;
   readonly onSelectionChange: (guids: Set<string>) => void;
-  readonly onFocus: (guid: string) => void;
+  readonly onFocus: (guid: string | undefined) => void;
   readonly onEnabledChange: (guid: string, enabled: boolean) => void;
   readonly onEnableAll: () => void;
   readonly onDisableSelected: () => void;
@@ -18,7 +20,9 @@ interface BladeTableProps {
 }
 
 export function BladeTable(props: BladeTableProps) {
+  const { t } = useTranslation(["analysis", "common"]);
   const rows = useMemo(() => buildBladeRows(props.bundle), [props.bundle]);
+  const modifiedGuids = useMemo(() => new Set(props.bundle.whatIfOverrides.map((override) => override.guid)), [props.bundle.whatIfOverrides]);
   const [typeFilter, setTypeFilter] = useState("all");
   const [flippedFilter, setFlippedFilter] = useState("all");
   const [stateFilter, setStateFilter] = useState("all");
@@ -70,36 +74,43 @@ export function BladeTable(props: BladeTableProps) {
     props.onSelectionChange(next);
   }
 
+  function selectRow(guid: string, event: MouseEvent<HTMLTableRowElement>) {
+    const modifier = event.ctrlKey || event.metaKey ? "toggle" : event.shiftKey ? "add" : "replace";
+    const next = updateBladeSelection(props.selectedGuids, guid, modifier);
+    props.onSelectionChange(next);
+    props.onFocus(next.has(guid) ? guid : undefined);
+  }
+
   return (
     <section className="data-panel table-panel">
       <div className="table-toolbar">
         <div>
-          <span className="panel-kicker">AERODYNAMIC BLADES</span>
-          <strong>{props.bundle.report.blades.length} enabled / {props.bundle.report.availableBlades.length} available</strong>
+          <span className="panel-kicker">{t("analysis:blades.title")}</span>
+          <strong>{t("analysis:blades.counts", { enabled: props.bundle.report.blades.length, available: props.bundle.report.availableBlades.length })}</strong>
         </div>
-        <label className="search-field"><span className="sr-only">Search blades</span><input type="search" placeholder="Search GUID or type" value={search} onChange={(event) => setSearch(event.target.value)} /></label>
-        <label>Type<select value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}><option value="all">All</option><option value="Propeller">Propeller</option><option value="SmallPropeller">SmallPropeller</option></select></label>
-        <label>State<select value={stateFilter} onChange={(event) => setStateFilter(event.target.value)}><option value="all">All</option><option value="enabled">Enabled</option><option value="disabled">Disabled</option></select></label>
-        <label>Flipped<select value={flippedFilter} onChange={(event) => setFlippedFilter(event.target.value)}><option value="all">All</option><option value="true">True</option><option value="false">False</option></select></label>
-        <button className="secondary-button" onClick={props.onEnableAll}>Enable all</button>
-        <button className="secondary-button" disabled={props.selectedGuids.size === 0} onClick={props.onDisableSelected}>Disable selected ({props.selectedGuids.size})</button>
-        <button className="ghost-button" onClick={props.onReset}>Reset</button>
+        <label className="search-field"><span className="sr-only">{t("analysis:blades.search")}</span><input type="search" placeholder={t("analysis:blades.searchPlaceholder")} value={search} onChange={(event) => setSearch(event.target.value)} /></label>
+        <label>{t("analysis:blades.type")}<select value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}><option value="all">{t("analysis:blades.all")}</option><option value="Propeller">Propeller</option><option value="SmallPropeller">SmallPropeller</option></select></label>
+        <label>{t("analysis:blades.state")}<select value={stateFilter} onChange={(event) => setStateFilter(event.target.value)}><option value="all">{t("analysis:blades.all")}</option><option value="enabled">{t("common:status.enabled")}</option><option value="disabled">{t("common:status.disabled")}</option></select></label>
+        <label>{t("analysis:blades.flipped")}<select value={flippedFilter} onChange={(event) => setFlippedFilter(event.target.value)}><option value="all">{t("analysis:blades.all")}</option><option value="true">{t("analysis:blades.true")}</option><option value="false">{t("analysis:blades.false")}</option></select></label>
+        <button className="secondary-button" onClick={props.onEnableAll}>{t("analysis:blades.enableAll")}</button>
+        <button className="secondary-button" disabled={props.selectedGuids.size === 0} onClick={props.onDisableSelected}>{t("analysis:blades.disableSelected", { count: props.selectedGuids.size })}</button>
+        <button className="ghost-button" onClick={props.onReset}>{t("common:actions.reset")}</button>
       </div>
       <div className="table-scroll">
         <table className="engineering-table blade-table">
           <thead><tr>
-            <th>Sel.</th><th>Enabled</th><th>{header("index", "#")}</th><th>{header("type", "Type")}</th><th>{header("guid", "GUID")}</th>
-            <th>{header("x", "X")}</th><th>{header("y", "Y")}</th><th>{header("z", "Z")}</th><th><span className="table-help">{header("flipped", "Flip")}<InfoTooltip label="About flipped blades">Flipped is the blade block's stored orientation flag. The recovered model applies it to the lift-normal angle; it is not an enabled/disabled state.</InfoTooltip></span></th>
+            <th>{t("analysis:blades.selectedShort")}</th><th>{t("analysis:blades.enabled")}</th><th>{header("index", "#")}</th><th>{header("type", t("analysis:blades.type"))}</th><th>{header("guid", "GUID")}</th>
+            <th>{header("x", "X")}</th><th>{header("y", "Y")}</th><th>{header("z", "Z")}</th><th><span className="table-help">{header("flipped", "Flip")}<InfoTooltip label={t("analysis:blades.aboutFlipped")}>{t("analysis:blades.flippedHelp")}</InfoTooltip></span></th><th>What-if</th>
             <th>{header("fx", "Fx")}</th><th>{header("fy", "Fy")}</th><th>{header("fz", "Fz")}</th>
             <th>{header("roll", "M roll")}</th><th>{header("pitch", "M pitch")}</th><th>{header("yaw", "M yaw")}</th><th>{header("power", "F·v")}</th>
           </tr></thead>
           <tbody>{sorted.map((row) => (
-            <tr key={row.blade.guid} className={`${row.enabled ? "" : "disabled-row"} ${props.focusedGuid === row.blade.guid ? "focused-row" : ""}`} onClick={() => props.onFocus(row.blade.guid)}>
-              <td><input aria-label={`Select blade ${row.blade.guid}`} type="checkbox" checked={props.selectedGuids.has(row.blade.guid)} onClick={(event) => event.stopPropagation()} onChange={(event) => select(row.blade.guid, event.target.checked)} /></td>
-              <td><input aria-label={`Enable blade ${row.blade.guid}`} type="checkbox" checked={row.enabled} onClick={(event) => event.stopPropagation()} onChange={(event) => props.onEnabledChange(row.blade.guid, event.target.checked)} /></td>
+            <tr key={row.blade.guid} className={`${row.enabled ? "" : "disabled-row"} ${props.focusedGuid === row.blade.guid ? "focused-row" : ""} ${props.selectedGuids.has(row.blade.guid) ? "selected-row" : ""} ${modifiedGuids.has(row.blade.guid) ? "what-if-row" : ""}`} onClick={(event) => selectRow(row.blade.guid, event)}>
+              <td><input aria-label={t("analysis:blades.selectAria", { guid: row.blade.guid })} type="checkbox" checked={props.selectedGuids.has(row.blade.guid)} onClick={(event) => event.stopPropagation()} onChange={(event) => select(row.blade.guid, event.target.checked)} /></td>
+              <td><input aria-label={t("analysis:blades.enableAria", { guid: row.blade.guid })} type="checkbox" checked={row.enabled} onClick={(event) => event.stopPropagation()} onChange={(event) => props.onEnabledChange(row.blade.guid, event.target.checked)} /></td>
               <td>{row.index}</td><td>{row.blade.kind}</td>
               <td><button className="guid-button" title={row.blade.guid} onClick={(event) => { event.stopPropagation(); void navigator.clipboard.writeText(row.blade.guid); }}>{row.blade.guid.slice(0, 8)}…</button></td>
-              <td>{formatNumber(row.blade.position[0], props.precision)}</td><td>{formatNumber(row.blade.position[1], props.precision)}</td><td>{formatNumber(row.blade.position[2], props.precision)}</td><td>{String(row.blade.flipped)}</td>
+              <td>{formatNumber(row.blade.position[0], props.precision)}</td><td>{formatNumber(row.blade.position[1], props.precision)}</td><td>{formatNumber(row.blade.position[2], props.precision)}</td><td>{String(row.blade.flipped)}</td><td>{modifiedGuids.has(row.blade.guid) ? <span className="what-if-badge">{t("analysis:blades.modified")}</span> : "—"}</td>
               <td>{formatNumber(row.force[0], props.precision)}</td><td>{formatNumber(row.force[1], props.precision)}</td><td>{formatNumber(row.force[2], props.precision)}</td>
               <td>{formatNumber(row.rollMoment, props.precision)}</td><td>{formatNumber(row.pitchMoment, props.precision)}</td><td>{formatNumber(row.yawMoment, props.precision)}</td><td>{formatNumber(row.power, props.precision)}</td>
             </tr>
