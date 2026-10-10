@@ -113,5 +113,5 @@ The browser and desktop builds use the same frontend output. CLI use through `ru
 - Imported CSV overlays currently target Plot Lab 1D. Re-importing a 2D `x,y,value` CSV as a heatmap is not implemented yet.
 - The executable and installer are unsigned.
 - The 3D view uses geometry-only Besiege prefab meshes for 90 verified vanilla IDs when the local cache is present, including exact full/short WoodenPole and Log variants selected from BSG `length`. Browser mode, missing caches and the remaining runtime/procedural IDs keep engineering fallbacks. Textures/materials/skins are intentionally unavailable.
-- Physics limitations documented in `UI.md`, `ANALYSIS.md` and `POC.md` are unchanged.
+- Physics and UI limitations documented in `UI.md` are unchanged.
 - No runtime exporter, exact inertia, runtime joint graph, multibody simulation or new aerodynamic law is included.

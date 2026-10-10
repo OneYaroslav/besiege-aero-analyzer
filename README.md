@@ -43,7 +43,7 @@ Machine-local axes are fixed as:
 - pitch rate `q`: about `+X`;
 - yaw rate `r`: about `+Y`.
 
-See [ANALYSIS.md](ANALYSIS.md) for derivative definitions, units, assumptions, and the Escape/Gripen comparison. The reconstruction evidence is documented in [FEASIBILITY.md](FEASIBILITY.md).
+These conventions are used consistently by the solver, derivative calculations, sweeps and 3D Inspector.
 
 ## Windows desktop application
 
@@ -124,8 +124,6 @@ Compare two machines at the same operating point:
 .\run.ps1 --compare "C:\path\machine-a.bsg" "C:\path\machine-b.bsg" --mass-group aircraft-heuristic --analyze-stability
 ```
 
-Full CLI and physics-PoC notes: [POC.md](POC.md).
-
 ## Tests and builds
 
 ```powershell
@@ -148,13 +146,10 @@ test/                   core, analysis, import/export, and UI-independent tests
 data/                   versioned Besiege mass database
 src-tauri/              Tauri 2 desktop wrapper, permissions, icons, and build config
 tools/                  mass/bounds/geometry extraction utilities
-FEASIBILITY.md          reverse-engineering feasibility study
-ANALYSIS.md             conventions and numerical comparison results
 UI.md                   UI architecture, operation, and limitations
 TUTORIAL.md             guided walkthrough architecture and bundled fixture
 DESKTOP.md              Windows desktop development and release instructions
 MESH_CACHE.md           local geometry-only prefab cache and fallback policy
-RUNTIME_EXPORTER.md     future runtime-exporter data contract
 ```
 
 ## Model limitations
@@ -167,7 +162,7 @@ RUNTIME_EXPORTER.md     future runtime-exporter data contract
 - Re-importing a 2D `x,y,value` CSV as a heatmap is not implemented yet.
 - What-if Move/Rotate currently uses machine/aircraft axes only (`+X` pitch/right, `+Y` yaw/up, `+Z` roll/forward). Local-space editing, 3D gizmos and writing modified geometry back to `.bsg` are intentionally out of scope.
 
-The intended next step for exact physical-component membership is the runtime exporter described in [RUNTIME_EXPORTER.md](RUNTIME_EXPORTER.md), not an invented static joint graph.
+Exact physical-component membership would require runtime data from the loaded Besiege machine; the analyzer does not invent a static joint graph when that information is unavailable.
 
 ## Game data
 
