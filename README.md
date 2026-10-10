@@ -2,6 +2,17 @@
 
 Local engineering software for analyzing aerodynamic machines saved as Besiege `.bsg` files.
 
+## Quick Windows download
+
+For the simplest portable installation:
+
+1. Click the green **Code** button above.
+2. Select **Download ZIP**.
+3. Extract the downloaded ZIP completely.
+4. Run **`Besiege Aero Analyzer.exe`** from the extracted folder.
+
+Do not run the executable from inside the compressed ZIP. Windows SmartScreen may show an unknown-publisher warning because the application is not code-signed. The normal Windows installer is also available under [Releases](https://github.com/OneYaroslav/besiege-aero-analyzer/releases/latest).
+
 The project parses machine files, applies the recovered vanilla `Propeller` (`id=26`), `SmallPropeller` (`id=55`), and aerodynamic `BuildSurface` (`id=73`) force laws, and calculates forces, moments, power, stability derivatives, rotational damping, sweeps, mass-model CG, and per-blade contributions. It includes a React/Vite engineering UI, a Tauri 2 Windows desktop wrapper, and a CLI built on the same calculation core.
 
 > Research status: this is an independent analysis tool, not an official Besiege product. Values are reported in game units unless a conversion is explicitly verified.

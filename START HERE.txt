@@ -1,0 +1,14 @@
+BESIEGE AERO ANALYZER
+=====================
+
+1. Extract this ZIP completely.
+2. Run "Besiege Aero Analyzer.exe" from the extracted folder.
+
+Do not run the application from inside the compressed ZIP.
+
+Windows may show an unknown-publisher warning because the executable is not
+code-signed. The source code is included in the same folder for transparency.
+
+Project page:
+https://github.com/OneYaroslav/besiege-aero-analyzer
+
