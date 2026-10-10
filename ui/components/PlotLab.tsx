@@ -252,15 +252,15 @@ export function PlotLab({ first, second, precision, state, onStateChange, import
       const started = performance.now();
       try {
         if (plotMode === "1d") {
-          const first1D = evaluatePlot1D(first.report.blades, first.report.state, config1D);
-          const second1D = second ? evaluatePlot1D(second.report.blades, second.report.state, config1D) : undefined;
+          const first1D = evaluatePlot1D(first.report.blades, first.report.state, config1D, undefined, first.report.buildSurfaces);
+          const second1D = second ? evaluatePlot1D(second.report.blades, second.report.state, config1D, undefined, second.report.buildSurfaces) : undefined;
           if (!cancelled) setEvaluation({ first1D, second1D, elapsedMs: performance.now() - started, computing: false });
         } else {
-          const first2D = evaluatePlot2D(first.report.blades, first.report.state, config2D);
-          const second2D = second ? evaluatePlot2D(second.report.blades, second.report.state, config2D) : undefined;
+          const first2D = evaluatePlot2D(first.report.blades, first.report.state, config2D, first.report.buildSurfaces);
+          const second2D = second ? evaluatePlot2D(second.report.blades, second.report.state, config2D, second.report.buildSurfaces) : undefined;
           const momentConfig = turnAnalysis && config2D.quantity !== "pitchMoment" ? { ...config2D, quantity: "pitchMoment" as const } : config2D;
-          const firstTurnMoment2D = turnAnalysis ? (momentConfig === config2D ? first2D : evaluatePlot2D(first.report.blades, first.report.state, momentConfig)) : undefined;
-          const secondTurnMoment2D = turnAnalysis && second ? (momentConfig === config2D ? second2D : evaluatePlot2D(second.report.blades, second.report.state, momentConfig)) : undefined;
+          const firstTurnMoment2D = turnAnalysis ? (momentConfig === config2D ? first2D : evaluatePlot2D(first.report.blades, first.report.state, momentConfig, first.report.buildSurfaces)) : undefined;
+          const secondTurnMoment2D = turnAnalysis && second ? (momentConfig === config2D ? second2D : evaluatePlot2D(second.report.blades, second.report.state, momentConfig, second.report.buildSurfaces)) : undefined;
           if (!cancelled) setEvaluation({ first2D, second2D, firstTurnMoment2D, secondTurnMoment2D, elapsedMs: performance.now() - started, computing: false });
         }
       } catch (cause) {

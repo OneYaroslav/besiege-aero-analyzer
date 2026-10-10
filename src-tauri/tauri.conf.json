@@ -47,7 +47,13 @@
         "silent": true
       },
       "nsis": {
-        "installMode": "currentUser"
+        "installMode": "currentUser",
+        "languages": ["English", "Russian"],
+        "displayLanguageSelector": true,
+        "compression": "lzma",
+        "startMenuFolder": "Besiege Aero Analyzer",
+        "installerIcon": "icons/icon.ico",
+        "uninstallerIcon": "icons/icon.ico"
       }
     }
   }

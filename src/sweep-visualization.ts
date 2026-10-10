@@ -30,7 +30,7 @@ export function sweepMetricValue(point: SweepResult["points"][number], metric: S
   if (metric === "forceX") return point.totalForce[0];
   if (metric === "forceY") return point.totalForce[1];
   if (metric === "forceZ") return point.totalForce[2];
-  if (metric === "power") return point.totalBladePower;
+  if (metric === "power") return point.totalPower ?? point.totalBladePower;
   return point.moments[metric];
 }
 

@@ -25,7 +25,7 @@ interface SnapshotsPanelProps {
 }
 
 export function SnapshotsPanel(props: SnapshotsPanelProps) {
-  const { t, i18n } = useTranslation(["snapshots", "common"]);
+  const { t, i18n } = useTranslation(["snapshots", "common", "analysis"]);
   const [name, setName] = useState("");
   const [note, setNote] = useState("");
   const [editingId, setEditingId] = useState<string>();
@@ -93,7 +93,7 @@ export function SnapshotsPanel(props: SnapshotsPanelProps) {
       <div className="panel-title"><span>{t("snapshots:compare")}</span><small>{t("snapshots:deltaRule")}</small></div>
       <div className="snapshot-source-selectors"><label>{t("snapshots:first")}<select value={firstSource} onChange={(event) => setFirstSource(event.target.value)}><option value="current">{t("snapshots:current")}</option>{props.snapshots.map((snapshot) => <option key={snapshot.id} value={snapshot.id}>{snapshot.name}</option>)}</select></label><label>{t("snapshots:second")}<select value={secondSource} onChange={(event) => setSecondSource(event.target.value)}><option value="">{t("snapshots:select")}</option><option value="current">{t("snapshots:current")}</option>{props.snapshots.map((snapshot) => <option key={snapshot.id} value={snapshot.id}>{snapshot.name}</option>)}</select></label></div>
       {[...first.warnings, ...(second?.warnings ?? [])].map((warning) => <div className="unit-warning" key={warning}>{warning}</div>)}
-      {second && rows.length > 0 && <div className="table-scroll"><table className="engineering-table comparison-table"><thead><tr><th>{t("snapshots:quantity")}</th><th>{t("snapshots:units")}</th><th>{first.label}</th><th>{second.label}</th><th>{t("snapshots:deltaColumn")}</th></tr></thead><tbody>{rows.map((row) => <tr key={row.key}><th>{row.label}</th><td>{row.units}</td><td>{display(row.first)}</td><td>{display(row.second)}</td><td className="delta-cell">{delta(row.first, row.second)}</td></tr>)}</tbody></table></div>}
+      {second && rows.length > 0 && <div className="table-scroll"><table className="engineering-table comparison-table"><thead><tr><th>{t("snapshots:quantity")}</th><th>{t("snapshots:units")}</th><th>{first.label}</th><th>{second.label}</th><th>{t("snapshots:deltaColumn")}</th></tr></thead><tbody>{rows.map((row) => <tr key={row.key}><th>{t(`analysis:comparison.rows.${row.key}` as never)}</th><td>{row.units}</td><td>{display(row.first)}</td><td>{display(row.second)}</td><td className="delta-cell">{delta(row.first, row.second)}</td></tr>)}</tbody></table></div>}
       {second && <div className="snapshot-change-list"><strong>{t("snapshots:changes")}</strong>{changes.length > 0 ? <ul>{changes.map((change) => <li key={change}>{localizeChange(change)}</li>)}</ul> : <p>{t("snapshots:noChanges")}</p>}</div>}
       {second && rows.length === 0 && <p className="empty-note">{t("snapshots:sourceMissing")}</p>}
     </section>

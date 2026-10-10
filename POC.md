@@ -124,6 +124,12 @@ Approximate point-mass inertia about соответствующего CG (не R
 
 AxialDrag law на mass-model этапе не изменялась.
 
+### BuildSurface id=73 aero
+
+Активная деревянная поверхность (`bmt-aero=true`, wood material) использует восстановленную из Besiege 1.90-25346 procedural geometry. Для каждой из 3/4 угловых точек вычисляются `u = V + omega × (x-CG)`, local `d = dot(normal,-uLocal)`, `s2=min(|u|²,90000)` и `FLocal = normal*d*s2*0.0002500000118743628*SurfaceArea/cornerCount`. Сила преобразуется через block `TransformVector`, moment считается как `(x-CG)×F`, power — как сумма `F_i·u_i`. Glass material остаётся неаэродинамическим даже при включённой mapper-галке.
+
+Solver и UI хранят раздельные Blade / BuildSurface / Total force, moment и power. Derivatives, standard sweeps, Plot Lab, Compare, Snapshots и Turn Analysis используют Total из одного общего core path.
+
 ## Повторные прогоны
 
 Для `V=(0,0,100)`, 37 blades и трёх omega states:
@@ -148,7 +154,8 @@ Mass/CG для первых двух models: `95.300001` / all CG выше; дл
 - BuildSurface runtime mass и endpoint Rigidbody Spring/Rope пока не известны точно.
 - Spatial component suggestion не доказывает joint membership логического куба или отдельного LogicGate.
 - Approximate inertia учитывает blocks как point masses и не является Unity `inertiaTensor`.
-- Точка приложения aero force пока BSG block-root position; её нужно сверить runtime.
+- Точка приложения blade aero force остаётся BSG block-root position; BuildSurface forces прикладываются в восстановленных corner points.
+- Для BuildSurface не моделируются отдельные runtime Rigidbody states, разрушение, joint constraints и PhysX multibody behavior.
 - Machine forward/up остаются manual.
 
 Перед inertia/control-response нужен runtime snapshot из Besiege: exact masses/COM/inertia, все child Rigidbody, joints/connectedBody, collider state и physical connected-component membership.

@@ -20,6 +20,7 @@ export function MachineSummary({ bundle, precision, label }: { bundle: UiAnalysi
         <div><span>{t("summary.cg")} <InfoTooltip label={t("summary.aboutCg")}>{t("summary.cgHelp")}</InfoTooltip></span><VectorValue value={report.state.centerOfGravity} precision={precision} /></div>
         <div><span>{t("summary.aeroBlades")}</span><strong>{report.availableBlades.length}</strong></div>
         <div><span>{t("summary.enabled")}</span><strong>{report.blades.length} / {report.availableBlades.length}</strong></div>
+        <div><span>{t("summary.aeroSurfaces")}</span><strong>{report.buildSurfaces.length} / {report.availableBuildSurfaces.length}</strong></div>
         <div><span>{t("summary.propSmall")}</span><strong>{large} / {report.availableBlades.length - large} · {report.machine.bsgVersion}</strong></div>
       </div>
     </section>
@@ -47,8 +48,21 @@ export function BaselinePanel({ bundle, precision }: { bundle: UiAnalysisBundle;
         </section>
         <section className="metric-group power-group">
           <div className="subheading">{t("baseline.power")} <small>{t("units.power")}</small></div>
-          <Metric label={t("metrics.bladePower")} technical="Σ F·v" value={result.totalBladePower} units={t("units.enabledBladeSum")} precision={precision} help={t("help.bladePower")} />
+          <Metric label={t("metrics.aeroPower")} technical="Σ F·u" value={result.totalPower} units={t("units.allAeroPoints")} precision={precision} help={t("help.aeroPower")} />
         </section>
+      </div>
+      <div className="aero-source-breakdown" aria-label={t("sources.title")}>
+        <div className="source-head"><strong>{t("sources.title")}</strong><span>{t("baseline.force")} · Fx/Fy/Fz</span><span>{t("baseline.moment")} · R/P/Y</span><span>{t("baseline.power")}</span></div>
+        {([
+          [t("sources.blades"), result.bladeTotals],
+          [t("sources.buildSurfaces"), result.buildSurfaceTotals],
+          [t("sources.total"), { force: result.totalForce, moments: result.moments, power: result.totalPower }],
+        ] as const).map(([label, totals]) => <div className="source-row" key={label}>
+          <strong>{label}</strong>
+          <VectorValue value={totals.force} precision={precision} />
+          <VectorValue value={[totals.moments.roll, totals.moments.pitch, totals.moments.yaw]} precision={precision} />
+          <NumberValue value={totals.power} precision={precision} />
+        </div>)}
       </div>
     </section>
   );

@@ -6,7 +6,12 @@ import {
 } from "./groups.ts";
 import { analyzeMass, type MassAnalysis } from "./mass.ts";
 import { dot, type Vec3 } from "./math.ts";
-import { solveBlades, type BladeResult, type SolverResult } from "./physics.ts";
+import type { BladeResult } from "./physics.ts";
+import { solveAerodynamics, type AerodynamicSolverResult } from "./aerodynamics.ts";
+import {
+  collectBuildSurfaceGeometries,
+  type BuildSurfaceGeometry,
+} from "./build-surface-geometry.ts";
 
 export const ANALYSIS_AXES = {
   forward: [0, 0, 1] as Vec3,
@@ -123,7 +128,7 @@ export interface StabilityAnalysis {
     readonly alphaDegrees: number;
     readonly betaDegrees: number;
   };
-  readonly baseline: SolverResult;
+  readonly baseline: AerodynamicSolverResult;
   readonly derivatives: StabilityDerivatives;
   readonly convention: typeof ANALYSIS_CONVENTION;
 }
@@ -165,9 +170,12 @@ export interface SweepPoint {
   readonly value: number;
   readonly units: "degrees" | "rad/s";
   readonly totalForce: Vec3;
-  readonly moments: SolverResult["moments"];
+  readonly moments: AerodynamicSolverResult["moments"];
   readonly totalMoment: Vec3;
+  readonly totalPower?: number;
+  /** Blade-only legacy value retained for existing exports. */
   readonly totalBladePower: number;
+  readonly totalBuildSurfacePower?: number;
 }
 
 export interface SweepResult {
@@ -200,6 +208,9 @@ export interface MachineAnalysis {
   readonly mass: MassAnalysis;
   readonly availableBlades: readonly VanillaBlade[];
   readonly blades: readonly VanillaBlade[];
+  readonly availableBuildSurfaces: readonly BuildSurfaceGeometry[];
+  readonly buildSurfaces: readonly BuildSurfaceGeometry[];
+  readonly buildSurfaceWarnings: readonly string[];
   readonly disabledBladeGuids: ReadonlySet<string>;
   readonly state: AnalysisState;
   readonly stability: StabilityAnalysis;
@@ -272,9 +283,13 @@ export function angularVelocityFromRates(p: number, q: number, r: number): Vec3 
   return [q, r, p];
 }
 
-export function solveAnalysisState(blades: readonly VanillaBlade[], state: AnalysisState): SolverResult {
+export function solveAnalysisState(
+  blades: readonly VanillaBlade[],
+  state: AnalysisState,
+  buildSurfaces: readonly BuildSurfaceGeometry[] = [],
+): AerodynamicSolverResult {
   validateState(state);
-  return solveBlades(blades, {
+  return solveAerodynamics(blades, buildSurfaces, {
     linearVelocity: velocityFromSpeedAngles(state.speed, state.alpha, state.beta),
     angularVelocity: angularVelocityFromRates(state.p, state.q, state.r),
     centerOfGravity: state.centerOfGravity,
@@ -300,12 +315,12 @@ function perturb(state: AnalysisState, variable: StateVariable, delta: number): 
   return { ...state, [variable]: state[variable] + delta };
 }
 
-function moment(result: SolverResult, output: MomentName): number {
+function moment(result: AerodynamicSolverResult, output: MomentName): number {
   return result.moments[output];
 }
 
 function scalarDerivative(
-  pair: readonly [SolverResult, SolverResult],
+  pair: readonly [AerodynamicSolverResult, AerodynamicSolverResult],
   input: StateVariable,
   output: MomentName,
   step: number,
@@ -324,12 +339,13 @@ export function analyzeStability(
   blades: readonly VanillaBlade[],
   state: AnalysisState,
   steps: DerivativeSteps = DEFAULT_DERIVATIVE_STEPS,
+  buildSurfaces: readonly BuildSurfaceGeometry[] = [],
 ): StabilityAnalysis {
   validateState(state);
   validateSteps(steps);
-  const evaluatePair = (variable: StateVariable, step: number): readonly [SolverResult, SolverResult] => [
-    solveAnalysisState(blades, perturb(state, variable, step)),
-    solveAnalysisState(blades, perturb(state, variable, -step)),
+  const evaluatePair = (variable: StateVariable, step: number): readonly [AerodynamicSolverResult, AerodynamicSolverResult] => [
+    solveAnalysisState(blades, perturb(state, variable, step), buildSurfaces),
+    solveAnalysisState(blades, perturb(state, variable, -step), buildSurfaces),
   ];
   const alpha = evaluatePair("alpha", steps.alphaRadians);
   const beta = evaluatePair("beta", steps.betaRadians);
@@ -345,7 +361,7 @@ export function analyzeStability(
       alphaDegrees: radiansToDegrees(steps.alphaRadians),
       betaDegrees: radiansToDegrees(steps.betaRadians),
     },
-    baseline: solveAnalysisState(blades, state),
+    baseline: solveAnalysisState(blades, state, buildSurfaces),
     derivatives: {
       static: {
         pitchAlpha: scalarDerivative(alpha, "alpha", "pitch", steps.alphaRadians),
@@ -410,17 +426,24 @@ export function analyzeBladeContributions(
   state: AnalysisState,
   derivative: ContributionDerivative,
   steps: DerivativeSteps = DEFAULT_DERIVATIVE_STEPS,
+  buildSurfaces: readonly BuildSurfaceGeometry[] = [],
 ): BladeContributionAnalysis {
   validateState(state);
   validateSteps(steps);
   const spec = CONTRIBUTION_SPECS[derivative];
   const step = steps[spec.stepKind];
-  const baseline = solveAnalysisState(blades, state);
-  const plus = solveAnalysisState(blades, perturb(state, spec.variable, step));
-  const minus = solveAnalysisState(blades, perturb(state, spec.variable, -step));
+  const baseline = solveAnalysisState(blades, state, buildSurfaces);
+  const plus = solveAnalysisState(blades, perturb(state, spec.variable, step), buildSurfaces);
+  const minus = solveAnalysisState(blades, perturb(state, spec.variable, -step), buildSurfaces);
   const plusByGuid = new Map(plus.blades.map((entry) => [entry.blade.guid, entry]));
   const minusByGuid = new Map(minus.blades.map((entry) => [entry.blade.guid, entry]));
-  const totalDerivative = centralDifference(moment(plus, spec.output), moment(minus, spec.output), step);
+  // This table intentionally remains a per-blade decomposition. BuildSurface
+  // derivatives belong to the combined analysis totals, not to blade shares.
+  const totalDerivative = centralDifference(
+    plus.bladeTotals.moments[spec.output],
+    minus.bladeTotals.moments[spec.output],
+    step,
+  );
   const contributions = baseline.blades.map((entry) => {
     const plusEntry = plusByGuid.get(entry.blade.guid);
     const minusEntry = minusByGuid.get(entry.blade.guid);
@@ -462,17 +485,20 @@ function sweep(
   variable: SweepResult["variable"],
   values: readonly number[],
   units: SweepPoint["units"],
+  buildSurfaces: readonly BuildSurfaceGeometry[] = [],
 ): SweepResult {
   const points = values.map((value) => {
     const stateValue = units === "degrees" ? degreesToRadians(value) : value;
-    const result = solveAnalysisState(blades, { ...state, [variable]: stateValue });
+    const result = solveAnalysisState(blades, { ...state, [variable]: stateValue }, buildSurfaces);
     return {
       value,
       units,
       totalForce: result.totalForce,
       moments: result.moments,
       totalMoment: result.totalMoment,
+      totalPower: result.totalPower,
       totalBladePower: result.totalBladePower,
+      totalBuildSurfacePower: result.totalBuildSurfacePower,
     } satisfies SweepPoint;
   });
   return { variable, valuesAreAbsolute: true, points, convention: ANALYSIS_CONVENTION };
@@ -482,16 +508,18 @@ export function sweepAlpha(
   blades: readonly VanillaBlade[],
   state: AnalysisState,
   degrees: readonly number[] = DEFAULT_ANGLE_SWEEP_DEGREES,
+  buildSurfaces: readonly BuildSurfaceGeometry[] = [],
 ): SweepResult {
-  return sweep(blades, state, "alpha", degrees, "degrees");
+  return sweep(blades, state, "alpha", degrees, "degrees", buildSurfaces);
 }
 
 export function sweepBeta(
   blades: readonly VanillaBlade[],
   state: AnalysisState,
   degrees: readonly number[] = DEFAULT_ANGLE_SWEEP_DEGREES,
+  buildSurfaces: readonly BuildSurfaceGeometry[] = [],
 ): SweepResult {
-  return sweep(blades, state, "beta", degrees, "degrees");
+  return sweep(blades, state, "beta", degrees, "degrees", buildSurfaces);
 }
 
 export function sweepRate(
@@ -499,8 +527,9 @@ export function sweepRate(
   state: AnalysisState,
   variable: "p" | "q" | "r",
   rates: readonly number[] = DEFAULT_RATE_SWEEP,
+  buildSurfaces: readonly BuildSurfaceGeometry[] = [],
 ): SweepResult {
-  return sweep(blades, state, variable, rates, "rad/s");
+  return sweep(blades, state, variable, rates, "rad/s", buildSurfaces);
 }
 
 export function analyzeMachine(machine: BsgMachine, config: MachineAnalysisConfig): MachineAnalysis {
@@ -519,6 +548,9 @@ export function analyzeMachine(machine: BsgMachine, config: MachineAnalysisConfi
     [...(config.disabledBladeGuids ?? [])].filter((guid) => availableGuids.has(guid)),
   );
   const blades = availableBlades.filter((blade) => !disabledBladeGuids.has(blade.guid));
+  const surfaceCollection = collectBuildSurfaceGeometries(group.blocks, machine.blocks);
+  const availableBuildSurfaces = surfaceCollection.surfaces;
+  const buildSurfaces = availableBuildSurfaces.filter((surface) => surface.aerodynamicActive);
   const state: AnalysisState = {
     speed: config.speed,
     alpha: config.alpha,
@@ -535,9 +567,12 @@ export function analyzeMachine(machine: BsgMachine, config: MachineAnalysisConfi
     mass,
     availableBlades,
     blades,
+    availableBuildSurfaces,
+    buildSurfaces,
+    buildSurfaceWarnings: surfaceCollection.warnings,
     disabledBladeGuids,
     state,
-    stability: analyzeStability(blades, state, config.steps),
+    stability: analyzeStability(blades, state, config.steps, buildSurfaces),
   };
 }
 

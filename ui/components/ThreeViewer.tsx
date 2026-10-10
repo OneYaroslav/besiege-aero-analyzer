@@ -209,11 +209,9 @@ function createSegmentMesh(segment: SchematicSegment, shape: "round" | "square" 
 
 function createSurfaceMesh(surface: SchematicSurface): THREE.Mesh {
   const positions = surface.vertices.flatMap((vertex) => [...vertex]);
-  const indices: number[] = [];
-  for (let index = 1; index < surface.vertices.length - 1; index += 1) indices.push(0, index, index + 1);
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
-  geometry.setIndex(indices);
+  geometry.setIndex([...surface.triangleIndices]);
   geometry.computeVertexNormals();
   const material = new THREE.MeshStandardMaterial({
     color: surface.color,
@@ -228,7 +226,7 @@ function createSurfaceMesh(surface: SchematicSurface): THREE.Mesh {
   });
   const mesh = new THREE.Mesh(geometry, material);
   const outline = new THREE.LineLoop(
-    new THREE.BufferGeometry().setFromPoints(surface.vertices.map((vertex) => new THREE.Vector3(...vertex))),
+    new THREE.BufferGeometry().setFromPoints(surface.boundaryVertices.map((vertex) => new THREE.Vector3(...vertex))),
     new THREE.LineBasicMaterial({ color: 0xa8c2d0, transparent: true, opacity: 0.8 }),
   );
   mesh.add(outline);
@@ -768,7 +766,12 @@ export function ThreeViewer(props: ThreeViewerProps) {
     const span = runtime.span;
     const cg = props.bundle.report.state.centerOfGravity;
     const enabledVisible = props.bundle.report.stability.baseline.blades.filter((entry) => visible.has(entry.blade.guid));
-    const maxForce = Math.max(...enabledVisible.map((entry) => Math.hypot(...entry.force)), 0);
+    const surfaceCorners = props.bundle.report.stability.baseline.buildSurfaces.flatMap((surface) => surface.corners);
+    const maxForce = Math.max(
+      ...enabledVisible.map((entry) => Math.hypot(...entry.force)),
+      ...surfaceCorners.map((entry) => Math.hypot(...entry.force)),
+      0,
+    );
     const forceLength = (magnitude: number) => forceScaleAuto
       ? (maxForce > 1e-12 ? span * 0.24 * magnitude / maxForce * forceScaleMultiplier : 0)
       : span * 0.002 * magnitude * forceScaleMultiplier;
@@ -783,6 +786,12 @@ export function ThreeViewer(props: ThreeViewerProps) {
       if (normalizedToggles.forceVectors) {
         const magnitude = Math.hypot(...entry.force);
         if (magnitude > 1e-10) addArrow(runtime.overlayGroup, entry.blade.position, entry.force, forceLength(magnitude), 0x70dfa5);
+      }
+    }
+    if (normalizedToggles.forceVectors) {
+      for (const corner of surfaceCorners) {
+        const magnitude = Math.hypot(...corner.force);
+        if (magnitude > 1e-10) addArrow(runtime.overlayGroup, corner.position, corner.force, forceLength(magnitude), 0xf2a75e);
       }
     }
 
@@ -861,7 +870,7 @@ export function ThreeViewer(props: ThreeViewerProps) {
         </div>
         <aside className="viewer-sidepanel">
           {props.displayMode === "geometry" ? <section><span className="panel-kicker">{t("legend.geometry")}</span><div className={`viewer-cache-state ${visualMeshLibrary.available ? "available" : "fallback"}`}><strong>{visualMeshLibrary.available ? t("legend.cache", { count: visualMeshLibrary.manifest.blockCount }) : t("schematicFallback")}</strong><small>{visualMeshLibrary.available ? t("legend.instances", { count: realMeshInstanceCount, excluded: visualMeshLibrary.manifest.excludedCount }) : visualMeshReason}</small></div><div className="viewer-type-legend"><span><i className="legend-large" />Propeller</span><span><i className="legend-small" />SmallPropeller</span><span><i className="legend-flipped" />{t("legend.flipped")}</span><span><i className="legend-what-if" />{t("legend.whatIf")}</span></div><small>{t("legend.chain")}</small></section> : <section className="inspector-color-legend"><span className="panel-kicker">{t("legend.autoScale")}</span><strong>{t(`modes.${props.displayMode}`)}</strong><div className={`inspector-gradient ${definition.signed ? "signed" : "sequential"}`} /><div><span>{formatNumber(colorScale.minimum, props.precision)}</span>{definition.signed && <span>0</span>}<span>{formatNumber(colorScale.maximum, props.precision)}</span></div><small>{t(`units.${props.displayMode}`)}</small></section>}
-          <section className="viewer-overlays"><span className="panel-kicker">{t("overlays.title")}</span>{(["blocks", "blades", "totalForce", "forceAxes", "senseAxes"] as const).map((key) => <label key={key}><input type="checkbox" checked={normalizedToggles[key]} onChange={() => toggle(key)} />{t(`overlays.${key}`)}</label>)}<div className="axis-key"><span className="axis-x">{t("axes.x")}</span><span className="axis-y">{t("axes.y")}</span><span className="axis-z">{t("axes.z")}</span></div></section>
+          <section className="viewer-overlays"><span className="panel-kicker">{t("overlays.title")}</span>{(["blocks", "blades", "totalForce", "forceAxes", "senseAxes"] as const).map((key) => <label key={key}><input type="checkbox" checked={normalizedToggles[key]} onChange={() => toggle(key)} />{t(`overlays.${key}`)}</label>)}{normalizedToggles.forceVectors && <small>{t("overlays.forceLegend")}</small>}<div className="axis-key"><span className="axis-x">{t("axes.x")}</span><span className="axis-y">{t("axes.y")}</span><span className="axis-z">{t("axes.z")}</span></div></section>
           <section className="viewer-block-inspector"><span className="panel-kicker">{t("blockInspector.title")}</span>{inspectedBlock ? <><strong>{inspectedBlock.type} · id={inspectedBlock.id}</strong><small>{inspectedBlock.guid}</small><dl className="selection-summary"><dt>{t("blockInspector.source")}</dt><dd>{inspectedBlock.source}</dd><dt>{t("blockInspector.geometry")}</dt><dd>{inspectedBlock.geometry}</dd></dl></> : <small>{t("blockInspector.empty")}</small>}</section>
           <section className="viewer-force-scale"><span className="panel-kicker">{t("forceScale.title")}</span><label><input type="checkbox" checked={forceScaleAuto} onChange={(event) => setForceScaleAuto(event.target.checked)} />{t("forceScale.auto")}</label><label>{t("forceScale.multiplier")} <input type="range" min="0.1" max="4" step="0.1" value={forceScaleMultiplier} onChange={(event) => setForceScaleMultiplier(Number(event.target.value))} /><output>{forceScaleMultiplier.toFixed(1)}×</output></label></section>
           <section className="viewer-selection"><span className="panel-kicker">{t("selection.title")}</span><strong>{t("selection.count", { count: selectionSummary.bladeCount })}</strong><div className="viewer-selection-actions"><button disabled={selectionSummary.bladeCount === 0} onClick={focusSelected}>{t("selection.focus")}</button><button disabled={selectionSummary.bladeCount === 0} onClick={() => setVisibility((current) => hideSelectedBlades(current, props.selectedGuids))}>{t("selection.hide")}</button><button disabled={selectionSummary.bladeCount === 0} onClick={() => setVisibility(isolateSelectedBlades(props.selectedGuids))}>{t("selection.isolate")}</button><button disabled={hiddenCount === 0 && visibility.isolatedGuids === null} onClick={() => setVisibility(showAllBlades())}>{t("selection.showAll")}</button><button className="danger-action" disabled={selectionSummary.bladeCount === 0} onClick={props.onDisableSelected}>{t("selection.disable")}</button></div>

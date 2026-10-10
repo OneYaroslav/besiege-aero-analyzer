@@ -1,8 +1,8 @@
 # Besiege Aero Analyzer
 
-Local engineering software for analyzing aerodynamic blade machines saved as Besiege `.bsg` files.
+Local engineering software for analyzing aerodynamic machines saved as Besiege `.bsg` files.
 
-The project parses machine files, applies the recovered vanilla `Propeller` (`id=26`) and `SmallPropeller` (`id=55`) force model, and calculates forces, moments, power, stability derivatives, rotational damping, sweeps, mass-model CG, and per-blade contributions. It includes a React/Vite engineering UI, a Tauri 2 Windows desktop wrapper, and a CLI built on the same calculation core.
+The project parses machine files, applies the recovered vanilla `Propeller` (`id=26`), `SmallPropeller` (`id=55`), and aerodynamic `BuildSurface` (`id=73`) force laws, and calculates forces, moments, power, stability derivatives, rotational damping, sweeps, mass-model CG, and per-blade contributions. It includes a React/Vite engineering UI, a Tauri 2 Windows desktop wrapper, and a CLI built on the same calculation core.
 
 > Research status: this is an independent analysis tool, not an official Besiege product. Values are reported in game units unless a conversion is explicitly verified.
 
@@ -10,6 +10,7 @@ The project parses machine files, applies the recovered vanilla `Propeller` (`id
 
 - local `.bsg` parsing with no file upload;
 - recovered Besiege 1.90-25346 normal-air AxialDrag law;
+- BSG-reconstructed BuildSurface geometry and the recovered per-corner aerodynamic force law, with wood/glass material gating;
 - vanilla blade detection, including position, quaternion rotation, scale, and `flipped`;
 - per-blade force, moment about CG, and `F·v`;
 - versioned mass database and approximate automatic CG;
@@ -27,7 +28,7 @@ The project parses machine files, applies the recovered vanilla `Propeller` (`id
 - browser development mode and native Windows desktop packaging through Tauri 2.
 - bundled 22-step interactive tutorial covering the program purpose, Components/Analysis Group, current state, static and damping response, five standard sweeps, 3D Inspector, Blade Groups, Snapshots and What-if workflow.
 
-The physics formulas live only in the shared core. React components do not contain a second aerodynamic implementation.
+The physics formulas live only in the shared core. React components do not contain a second aerodynamic implementation. Results expose separate Blade, BuildSurface, and Total force/moment/power values.
 
 What-if transforms are applied to a virtual `BsgMachine` before the shared mass/group/aero analysis. The resulting blade position, quaternion and flipped state therefore propagate through baseline forces/moments, derivatives, standard sweeps, Plot Lab, Compare, contributions, Snapshots and the 3D Inspector from one source of truth.
 

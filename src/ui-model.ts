@@ -193,7 +193,7 @@ export function buildUiAnalysis(
   ];
   const contributions = Object.fromEntries(contributionKinds.map((derivative) => [
     derivative,
-    analyzeBladeContributions(report.blades, report.state, derivative, steps),
+    analyzeBladeContributions(report.blades, report.state, derivative, steps, report.buildSurfaces),
   ])) as Record<ContributionDerivative, BladeContributionAnalysis>;
   return {
     report,
@@ -201,11 +201,11 @@ export function buildUiAnalysis(
     groupSelection: selection,
     groupStatus: selection.kind === "all" ? "ALL BLOCKS" : "HEURISTIC",
     sweeps: {
-      alpha: sweepAlpha(report.blades, report.state),
-      beta: sweepBeta(report.blades, report.state),
-      p: sweepRate(report.blades, report.state, "p"),
-      q: sweepRate(report.blades, report.state, "q"),
-      r: sweepRate(report.blades, report.state, "r"),
+      alpha: sweepAlpha(report.blades, report.state, undefined, report.buildSurfaces),
+      beta: sweepBeta(report.blades, report.state, undefined, report.buildSurfaces),
+      p: sweepRate(report.blades, report.state, "p", undefined, report.buildSurfaces),
+      q: sweepRate(report.blades, report.state, "q", undefined, report.buildSurfaces),
+      r: sweepRate(report.blades, report.state, "r", undefined, report.buildSurfaces),
     },
     contribution: contributions[contributionDerivative],
     contributions,
@@ -241,7 +241,7 @@ export function assembleComparisonRows(first: UiAnalysisBundle, second: UiAnalys
     { key: "blades", label: "Enabled blade count", units: "count", first: a.blades.length, second: b.blades.length },
     { key: "force", label: "Fx/Fy/Fz", units: "game force units", first: a.stability.baseline.totalForce, second: b.stability.baseline.totalForce },
     { key: "moment", label: "Pitch/Yaw/Roll", units: "game moment units", first: [a.stability.baseline.moments.pitch, a.stability.baseline.moments.yaw, a.stability.baseline.moments.roll], second: [b.stability.baseline.moments.pitch, b.stability.baseline.moments.yaw, b.stability.baseline.moments.roll] },
-    { key: "power", label: "Blade power ΣF·v", units: "game power units", first: a.stability.baseline.totalBladePower, second: b.stability.baseline.totalBladePower },
+    { key: "power", label: "Aerodynamic power ΣF·u", units: "game power units", first: a.stability.baseline.totalPower, second: b.stability.baseline.totalPower },
     { key: "pitch-alpha", label: "dM_pitch/dAlpha", units: "moment/radian", first: a.stability.derivatives.static.pitchAlpha.derivative, second: b.stability.derivatives.static.pitchAlpha.derivative },
     { key: "yaw-beta", label: "dM_yaw/dBeta", units: "moment/radian", first: a.stability.derivatives.static.yawBeta.derivative, second: b.stability.derivatives.static.yawBeta.derivative },
     { key: "roll-beta", label: "dM_roll/dBeta", units: "moment/radian", first: a.stability.derivatives.static.rollBeta.derivative, second: b.stability.derivatives.static.rollBeta.derivative },
@@ -291,6 +291,26 @@ function machineExport(bundle: UiAnalysisBundle, bladeGroups: readonly BladeGrou
       groups: bladeGroups,
       whatIfOverrides: bundle.whatIfOverrides,
     },
+    buildSurfaces: {
+      availableCount: report.availableBuildSurfaces.length,
+      activeCount: report.buildSurfaces.length,
+      warnings: report.buildSurfaceWarnings,
+      active: report.stability.baseline.buildSurfaces.map((result) => ({
+        guid: result.surface.block.guid,
+        material: result.surface.material,
+        surfaceArea: result.surface.surfaceArea,
+        totalForce: result.totalForce,
+        totalMoment: result.totalMoment,
+        totalPower: result.totalPower,
+        corners: result.corners.map((corner) => ({
+          position: corner.position,
+          pointVelocity: corner.pointVelocity,
+          force: corner.force,
+          momentAboutCg: corner.momentAboutCg,
+          power: corner.power,
+        })),
+      })),
+    },
     operatingPoint: {
       speed: report.state.speed,
       alphaRadians: report.state.alpha,
@@ -308,7 +328,13 @@ function machineExport(bundle: UiAnalysisBundle, bladeGroups: readonly BladeGrou
       totalForce: report.stability.baseline.totalForce,
       totalMoment: report.stability.baseline.totalMoment,
       moments: report.stability.baseline.moments,
+      totalPower: report.stability.baseline.totalPower,
       totalBladePower: report.stability.baseline.totalBladePower,
+      totalBuildSurfacePower: report.stability.baseline.totalBuildSurfacePower,
+      sources: {
+        blades: report.stability.baseline.bladeTotals,
+        buildSurfaces: report.stability.baseline.buildSurfaceTotals,
+      },
     },
     derivatives: report.stability.derivatives,
     sweeps: bundle.sweeps,
@@ -324,7 +350,8 @@ export function buildExportPayload(first: UiAnalysisBundle, second?: UiAnalysisB
     mode: second ? "compare" : "single",
     convention: ANALYSIS_CONVENTION,
     assumptions: [
-      "Besiege 1.90-25346 recovered vanilla blade law; no new aerodynamic formula.",
+      "Besiege 1.90-25346 recovered vanilla blade and BuildSurface laws; no new aerodynamic formula.",
+      "BuildSurface geometry is reconstructed from BSG edges/nodes using verified game code; runtime Rigidbody states, breakage, joints, and PhysX multibody behavior are not modeled exactly.",
       "Aircraft/component choices marked HEURISTIC do not reconstruct the runtime joint graph.",
       "CG is approximate where runtime Rigidbody COM/mass overrides are unavailable.",
       "What-if overrides are GUID-addressed virtual input transforms; the source BSG is not modified.",

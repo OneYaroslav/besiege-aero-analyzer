@@ -301,6 +301,10 @@ VERIFIED в текущем PoC:
 - per-blade contribution sum;
 - synthetic restoring/damping signs и mirrored symmetry;
 - одинаковый AnalysisState/steps в compare mode.
+- BuildSurface id=73 `bmt-aero` и material gating (`wood` aerodynamic, `glass` non-aerodynamic);
+- BuildSurface corner force law, squared-speed cap `90000`, wood multiplier `0.0002500000118743628`, `AddForceAtPosition` moment and per-corner `F·u` power;
+- BSG reconstruction of triangle/quad BuildSurface geometry from ordered BuildEdge/BuildNode links, including curved-edge interpolation, generated area and corner normals;
+- separate Blade / BuildSurface / Total force, moment and power totals throughout derivatives, sweeps and Plot Lab.
 
 HEURISTIC:
 
@@ -315,5 +319,8 @@ APPROXIMATE / runtime-dependent:
 - точные runtime COM/joints/physical components не известны;
 - moments и derivatives зависят от approximate CG;
 - blade force application point остаётся BSG block-root position.
+- BuildSurface uses one rigid-body state reconstructed from the selected AnalysisGroup; individual runtime Rigidbody velocities, broken state, joint constraints and PhysX multibody behavior are not reproduced.
+
+For the checked `Проект Ескапе.bsg` and `Saab JAS 39 Gripen2.bsg`, all reconstructable BuildSurfaces are inactive for aerodynamics after material gating (respectively `0/6` and `0/16` active). Their previously documented blade-only numeric results therefore remain unchanged.
 
 Отрицательная damping derivative означает opposing moment только в зафиксированной sign convention. Этот этап не использует inertia, поэтому не делает выводов об angular acceleration, time response или субъективной «плавности» управления.

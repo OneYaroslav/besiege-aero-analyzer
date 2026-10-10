@@ -6,6 +6,7 @@ import {
   type DerivativeSteps,
 } from "./analysis.ts";
 import type { VanillaBlade } from "./bsg.ts";
+import type { BuildSurfaceGeometry } from "./build-surface-geometry.ts";
 
 export type PlotInputVariable = "speed" | "alpha" | "beta" | "p" | "q" | "r";
 
@@ -113,7 +114,9 @@ export const PLOT_QUANTITIES: Readonly<Record<PlotQuantity, { label: string; uni
   rollMoment: { label: "Roll moment", units: "game moment units", derivative: false },
   pitchMoment: { label: "Pitch moment", units: "game moment units", derivative: false },
   yawMoment: { label: "Yaw moment", units: "game moment units", derivative: false },
-  bladePower: { label: "Blade power · ΣF·v", units: "game power units", derivative: false },
+  // Legacy key retained in saved Plot Lab state; the value is now the total
+  // aerodynamic power from blades plus active BuildSurface corner forces.
+  bladePower: { label: "Aerodynamic power · ΣF·u", units: "game power units", derivative: false },
   pitchAlpha: { label: "dM_pitch/dAlpha", units: "moment/radian", derivative: true },
   yawBeta: { label: "dM_yaw/dBeta", units: "moment/radian", derivative: true },
   rollBeta: { label: "dM_roll/dBeta", units: "moment/radian", derivative: true },
@@ -170,7 +173,7 @@ function quantityValue(
   if (quantity === "rollMoment") return baseline.moments.roll;
   if (quantity === "pitchMoment") return baseline.moments.pitch;
   if (quantity === "yawMoment") return baseline.moments.yaw;
-  if (quantity === "bladePower") return baseline.totalBladePower;
+  if (quantity === "bladePower") return baseline.totalPower;
   if (!stability) throw new Error(`${quantity} requires stability derivatives`);
   if (quantity === "pitchAlpha") return stability.derivatives.static.pitchAlpha.derivative;
   if (quantity === "yawBeta") return stability.derivatives.static.yawBeta.derivative;
@@ -185,10 +188,11 @@ function evaluateQuantities(
   state: AnalysisState,
   quantities: readonly PlotQuantity[],
   steps: DerivativeSteps,
+  buildSurfaces: readonly BuildSurfaceGeometry[],
 ): Readonly<Record<PlotQuantity, number>> {
   const requiresDerivatives = quantities.some((quantity) => PLOT_QUANTITIES[quantity].derivative);
-  const stability = requiresDerivatives ? analyzeStability(blades, state, steps) : undefined;
-  const baseline = stability?.baseline ?? solveAnalysisState(blades, state);
+  const stability = requiresDerivatives ? analyzeStability(blades, state, steps, buildSurfaces) : undefined;
+  const baseline = stability?.baseline ?? solveAnalysisState(blades, state, buildSurfaces);
   return Object.fromEntries(quantities.map((quantity) => [quantity, quantityValue(quantity, baseline, stability)])) as Readonly<Record<PlotQuantity, number>>;
 }
 
@@ -197,13 +201,14 @@ export function evaluatePlot1D(
   state: AnalysisState,
   config: Plot1DConfig,
   steps: DerivativeSteps = DEFAULT_DERIVATIVE_STEPS,
+  buildSurfaces: readonly BuildSurfaceGeometry[] = [],
 ): Plot1DResult {
   validateRange(config, "1D sweep");
   if (config.quantities.length === 0) throw new Error("1D sweep requires at least one output quantity");
   const quantities = [...new Set(config.quantities)];
   const points = generatePlotValues(config).map((x) => ({
     x,
-    values: evaluateQuantities(blades, stateForPlotInput(state, config.variable, x), quantities, steps),
+    values: evaluateQuantities(blades, stateForPlotInput(state, config.variable, x), quantities, steps, buildSurfaces),
   }));
   return { config: { ...config, quantities }, xUnits: PLOT_INPUTS[config.variable].units, points };
 }
@@ -212,6 +217,7 @@ export function evaluatePlot2D(
   blades: readonly VanillaBlade[],
   state: AnalysisState,
   config: Plot2DConfig,
+  buildSurfaces: readonly BuildSurfaceGeometry[] = [],
 ): Plot2DResult {
   validateRange(config.xRange, "2D X sweep");
   validateRange(config.yRange, "2D Y sweep");
@@ -222,7 +228,7 @@ export function evaluatePlot2D(
   const points = yValues.flatMap((y) => xValues.map((x) => {
     const xState = stateForPlotInput(state, config.xVariable, x);
     const pointState = stateForPlotInput(xState, config.yVariable, y);
-    const baseline = solveAnalysisState(blades, pointState);
+    const baseline = solveAnalysisState(blades, pointState, buildSurfaces);
     return { x, y, value: quantityValue(config.quantity, baseline) };
   }));
   return {

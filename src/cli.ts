@@ -20,7 +20,8 @@ import { loadBsg } from "./bsg-node.ts";
 import { selectAnalysisGroup, type ComponentSuggestion } from "./groups.ts";
 import { analyzeMass, type MassAnalysis, type PointMassInertia } from "./mass.ts";
 import { magnitude, subtract, type Quaternion, type Vec3 } from "./math.ts";
-import { solveBlades, type SolverResult } from "./physics.ts";
+import { collectBuildSurfaceGeometries } from "./build-surface-geometry.ts";
+import { solveAerodynamics, type AerodynamicSolverResult } from "./aerodynamics.ts";
 
 type CgOption = "auto" | Vec3;
 type MassGroupOption = "all" | "aircraft-heuristic";
@@ -368,7 +369,7 @@ function printComponentDiagnosis(
 
 function printResult(
   machine: BsgMachine,
-  result: SolverResult,
+  result: AerodynamicSolverResult,
   mass: MassAnalysis,
   cgMode: CgOption,
   suggestion: ComponentSuggestion,
@@ -415,7 +416,9 @@ function printResult(
   console.log(`  force=${vec(result.totalForce)}`);
   console.log(`  moment(CG)=${vec(result.totalMoment)}`);
   console.log(`  pitch=${f(result.moments.pitch)} roll=${f(result.moments.roll)} yaw=${f(result.moments.yaw)}`);
-  console.log(`  blade power sum(F.v)=${f(result.totalBladePower)}`);
+  console.log(`  blades: force=${vec(result.bladeTotals.force)} moment=${vec(result.bladeTotals.moment)} power=${f(result.bladeTotals.power)}`);
+  console.log(`  BuildSurfaces: force=${vec(result.buildSurfaceTotals.force)} moment=${vec(result.buildSurfaceTotals.moment)} power=${f(result.buildSurfaceTotals.power)}`);
+  console.log(`  total aerodynamic power sum(F.u)=${f(result.totalPower)}`);
 }
 
 interface AnalysisExtras {
@@ -446,11 +449,11 @@ function analysisConfig(options: CliOptions): MachineAnalysisConfig {
 
 function analysisExtras(report: MachineAnalysis, options: CliOptions): AnalysisExtras {
   const sweeps: SweepResult[] = [];
-  if (options.sweepAlpha) sweeps.push(sweepAlpha(report.blades, report.state));
-  if (options.sweepBeta) sweeps.push(sweepBeta(report.blades, report.state));
-  if (options.sweepRollRate) sweeps.push(sweepRate(report.blades, report.state, "p"));
-  if (options.sweepPitchRate) sweeps.push(sweepRate(report.blades, report.state, "q"));
-  if (options.sweepYawRate) sweeps.push(sweepRate(report.blades, report.state, "r"));
+  if (options.sweepAlpha) sweeps.push(sweepAlpha(report.blades, report.state, undefined, report.buildSurfaces));
+  if (options.sweepBeta) sweeps.push(sweepBeta(report.blades, report.state, undefined, report.buildSurfaces));
+  if (options.sweepRollRate) sweeps.push(sweepRate(report.blades, report.state, "p", undefined, report.buildSurfaces));
+  if (options.sweepPitchRate) sweeps.push(sweepRate(report.blades, report.state, "q", undefined, report.buildSurfaces));
+  if (options.sweepYawRate) sweeps.push(sweepRate(report.blades, report.state, "r", undefined, report.buildSurfaces));
   return {
     sweeps,
     contributions: [...options.bladeContributions].map((name) =>
@@ -458,7 +461,7 @@ function analysisExtras(report: MachineAnalysis, options: CliOptions): AnalysisE
         alphaRadians: report.stability.steps.alphaRadians,
         betaRadians: report.stability.steps.betaRadians,
         rateRadPerSecond: report.stability.steps.rateRadPerSecond,
-      })
+      }, report.buildSurfaces)
     ),
   };
 }
@@ -489,7 +492,7 @@ function printStability(stability: StabilityAnalysis): void {
   console.log(
     `Baseline: force=${vec(baseline.totalForce)} moment=${vec(baseline.totalMoment)}` +
     ` pitch=${f(baseline.moments.pitch)} roll=${f(baseline.moments.roll)}` +
-    ` yaw=${f(baseline.moments.yaw)} power=${f(baseline.totalBladePower)}`,
+    ` yaw=${f(baseline.moments.yaw)} power=${f(baseline.totalPower)}`,
   );
   const derivatives = stability.derivatives;
   console.log("Static derivatives (moment/radian):");
@@ -527,7 +530,7 @@ function printSweep(result: SweepResult): void {
     console.log(
       `  ${result.variable}=${point.value}: force=${vec(point.totalForce)}` +
       ` pitch=${f(point.moments.pitch)} roll=${f(point.moments.roll)}` +
-      ` yaw=${f(point.moments.yaw)} power=${f(point.totalBladePower)}`,
+      ` yaw=${f(point.moments.yaw)} power=${f(point.totalPower ?? point.totalBladePower)}`,
     );
   }
 }
@@ -574,21 +577,26 @@ function printMachineAnalysis(report: MachineAnalysis, extras: AnalysisExtras, o
   }
   console.log(
     `Mass=${f(report.mass.totalMass)} CG=${vec(report.state.centerOfGravity)}` +
-    ` blades=${report.blades.length} (Propeller=${large}, SmallPropeller=${report.blades.length - large})`,
+    ` blades=${report.blades.length} (Propeller=${large}, SmallPropeller=${report.blades.length - large})` +
+    ` BuildSurfaces=${report.buildSurfaces.length}/${report.availableBuildSurfaces.length} active/available`,
   );
-  for (const warning of report.mass.warnings) console.log(`WARNING: ${warning}`);
+  for (const warning of [...report.mass.warnings, ...report.buildSurfaceWarnings]) console.log(`WARNING: ${warning}`);
   printStability(report.stability);
   for (const result of extras.sweeps) printSweep(result);
   for (const result of extras.contributions) printContributions(result, options.contributionLimit);
 }
 
-function solverJson(result: SolverResult): object {
+function solverJson(result: AerodynamicSolverResult): object {
   return {
     bladeCount: result.blades.length,
+    activeBuildSurfaceCount: result.buildSurfaces.length,
     totalForce: result.totalForce,
     totalMoment: result.totalMoment,
     moments: result.moments,
+    totalPower: result.totalPower,
     totalBladePower: result.totalBladePower,
+    totalBuildSurfacePower: result.totalBuildSurfacePower,
+    sources: { blades: result.bladeTotals, buildSurfaces: result.buildSurfaceTotals },
   };
 }
 
@@ -635,6 +643,11 @@ function analysisJson(report: MachineAnalysis, extras: AnalysisExtras, options: 
       total: report.blades.length,
       propeller: large,
       smallPropeller: report.blades.length - large,
+    },
+    buildSurfaces: {
+      available: report.availableBuildSurfaces.length,
+      active: report.buildSurfaces.length,
+      warnings: report.buildSurfaceWarnings,
     },
     stability: {
       operatingPoint: {
@@ -684,7 +697,7 @@ function printComparison(first: MachineAnalysis, second: MachineAnalysis): void 
   row("blades", first.blades.length, second.blades.length);
   row("baseline force", vec(a.baseline.totalForce), vec(b.baseline.totalForce));
   row("baseline pitch/roll/yaw", `${f(a.baseline.moments.pitch)}/${f(a.baseline.moments.roll)}/${f(a.baseline.moments.yaw)}`, `${f(b.baseline.moments.pitch)}/${f(b.baseline.moments.roll)}/${f(b.baseline.moments.yaw)}`);
-  row("baseline power", f(a.baseline.totalBladePower), f(b.baseline.totalBladePower));
+  row("baseline aerodynamic power", f(a.baseline.totalPower), f(b.baseline.totalPower));
   row("dM_pitch/dAlpha", f(a.derivatives.static.pitchAlpha.derivative), f(b.derivatives.static.pitchAlpha.derivative));
   row("dM_yaw/dBeta", f(a.derivatives.static.yawBeta.derivative), f(b.derivatives.static.yawBeta.derivative));
   row("dM_roll/dBeta", f(a.derivatives.static.rollBeta.derivative), f(b.derivatives.static.rollBeta.derivative));
@@ -771,7 +784,9 @@ export function runCli(argv: readonly string[]): number {
   const groupGuids = new Set(group.blocks.map((block) => block.guid));
   const blades = allBlades.filter((blade) => groupGuids.has(blade.guid));
   const usedCg = options.cg === "auto" ? mass.centerOfMass : options.cg;
-  const result = solveBlades(blades, {
+  const surfaceCollection = collectBuildSurfaceGeometries(group.blocks, machine.blocks);
+  const surfaces = surfaceCollection.surfaces.filter((surface) => surface.aerodynamicActive);
+  const result = solveAerodynamics(blades, surfaces, {
     linearVelocity: options.velocity,
     angularVelocity: options.omega,
     centerOfGravity: usedCg,

@@ -60,6 +60,26 @@ Release artifacts:
 
 The direct executable can be started without installation on a Windows system with WebView2. The NSIS package installs for the current user and checks/downloads WebView2 when needed. Neither artifact is code-signed in this PoC, so Windows SmartScreen may show an unknown-publisher warning.
 
+The Setup wizard is available in English and Russian. It creates an application entry and uninstaller, a Start Menu shortcut inside the `Besiege Aero Analyzer` folder, and offers a Desktop shortcut on its final page. The installed application contains the compiled frontend inside the executable; it does not install Node.js, pnpm, Rust, Python, source files, tests or build caches.
+
+## Safe development cleanup
+
+Cargo compiler output is the main source of workspace size. Run:
+
+```powershell
+.\clean-dev.ps1
+```
+
+The default cleanup removes Rust debug and release compiler intermediates while preserving the ready-to-send release executable and NSIS Setup. It also preserves `node_modules`, `.tools`, `dist`, `.pnpm-store` and the local game mesh cache.
+
+For a clean rebuild and maximum temporary space recovery:
+
+```powershell
+.\clean-dev.ps1 -AllBuildArtifacts -WebDist -PackageStore
+```
+
+All of those targets are regeneratable. `.tools` is removed only with the explicit `-ToolCache` switch because it contains the local reverse-engineering/extraction toolchain. The script validates every deletion target against the project directory before removing it.
+
 ## Desktop behavior
 
 - Window title: Besiege Aero Analyzer.
@@ -70,6 +90,7 @@ The direct executable can be started without installation on a Windows system wi
 - The same actions keep browser-mode file-picker/download fallbacks; React components use one shared file-I/O adapter rather than Tauri checks.
 - Physics, mass model, derivatives, sweeps, what-if masks, comparisons and Three.js all execute inside the local webview.
 - The 3D Inspector automatically loads the versioned geometry-only prefab cache from `%LOCALAPPDATA%` when it exists. Build it from the locally installed game with `extract-mesh-cache.ps1`; see `MESH_CACHE.md`. Generated game meshes are not bundled or committed.
+- A missing mesh cache is non-fatal: the 3D Inspector uses schematic/procedural fallback geometry and its Model Status guidance points to the local extraction workflow. Besiege-owned mesh data stays outside the installer.
 - The app has no remote server, external API or Rust calculation backend.
 - `localStorage` contains only UI preferences. Machines are not persisted.
 

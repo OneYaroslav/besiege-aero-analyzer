@@ -242,7 +242,7 @@ function ComparisonTable({ first, second, precision, showPercent, onShowPercentC
       <div className="panel-title comparison-title"><span>{t("comparison.title")}</span><small>{t("comparison.subtitle")}</small><label><input type="checkbox" checked={showPercent} onChange={(event) => onShowPercentChange(event.target.checked)} /> {t("comparison.showPercent")}</label></div>
       <div className="table-scroll"><table className="engineering-table comparison-table">
         <thead><tr><th>{t("comparison.quantity")}</th><th>{t("comparison.units")}</th><th className="machine-a-text">A · {first.report.machine.name}</th><th className="machine-b-text">B · {second.report.machine.name}</th><th>Δ B − A</th>{showPercent && <th>{t("comparison.percentVsA")}</th>}</tr></thead>
-        <tbody>{rows.map((row) => <tr key={row.key}><th>{row.label}</th><td>{row.units}</td><td title={JSON.stringify(row.first)}>{display(row.first)}</td><td title={JSON.stringify(row.second)}>{display(row.second)}</td><td className="delta-cell">{delta(row.first, row.second)}</td>{showPercent && <td className="delta-percent-cell">{percent(row.first, row.second)}</td>}</tr>)}</tbody>
+        <tbody>{rows.map((row) => <tr key={row.key}><th>{t(`comparison.rows.${row.key}` as never)}</th><td>{row.units}</td><td title={JSON.stringify(row.first)}>{display(row.first)}</td><td title={JSON.stringify(row.second)}>{display(row.second)}</td><td className="delta-cell">{delta(row.first, row.second)}</td>{showPercent && <td className="delta-percent-cell">{percent(row.first, row.second)}</td>}</tr>)}</tbody>
       </table></div>
     </section>
   );
@@ -269,12 +269,13 @@ function ModelStatus({ open, onOpenChange }: { open: boolean; onOpenChange: (val
       <summary>{t("model.title")}</summary>
       <div className="model-status-grid">
         <span>{t("model.forceLaw")}</span><strong className="status-recovered">{t("model.recovered")}</strong>
+        <span>{t("model.surfaceLaw")}</span><strong className="status-recovered">{t("model.reconstructed")}</strong>
         <span>{t("model.grouping")}</span><strong className="status-estimated">{t("model.heuristic")}</strong>
         <span>{t("model.cg")}</span><strong>{t("model.approximate")}</strong>
         <span>{t("model.si")}</span><strong>{t("model.unavailable")}</strong>
       </div>
       <ul>
-        <li>{t("model.noteForce")}</li><li>{t("model.noteGroups")}</li><li>{t("model.noteCg")}</li><li>{t("model.noteLimits")}</li>
+        <li>{t("model.noteForce")}</li><li>{t("model.noteSurface")}</li><li>{t("model.noteGroups")}</li><li>{t("model.noteCg")}</li><li>{t("model.noteLimits")}</li>
       </ul>
     </details>
   );

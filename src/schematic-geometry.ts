@@ -2,6 +2,7 @@ import visualBoundsJson from "../data/besiege-1.90-25346-visual-bounds.json" wit
 import type { BsgBlock, VanillaBlade } from "./bsg.ts";
 import { massDatabaseEntry } from "./mass.ts";
 import { add, rotateVector, type Quaternion, type Vec3 } from "./math.ts";
+import { reconstructBuildSurfaceGeometry } from "./build-surface-geometry.ts";
 
 export type SchematicPrimitiveKind = "box" | "cylinder" | "sphere" | "cone";
 
@@ -39,6 +40,8 @@ export interface SchematicSegment {
 export interface SchematicSurface {
   readonly kind: "surface";
   readonly vertices: readonly Vec3[];
+  readonly triangleIndices: readonly number[];
+  readonly boundaryVertices: readonly Vec3[];
   readonly color: number;
   readonly opacity: number;
   readonly source: "explicit-build-links";
@@ -320,9 +323,31 @@ export function resolveSchematicBlock(block: BsgBlock, blocksByGuid: ReadonlyMap
     if (edge) return edge;
   }
   if (block.id === 73) {
+    const geometry = reconstructBuildSurfaceGeometry(block, blocksByGuid);
+    if (geometry) {
+      return {
+        kind: "surface",
+        vertices: geometry.vertices.map((vertex) => vertex.machinePosition),
+        triangleIndices: geometry.triangleIndices,
+        boundaryVertices: geometry.boundaryMachinePositions,
+        color: 0x607d8b,
+        opacity: 0.46,
+        source: "explicit-build-links",
+      };
+    }
     const vertices = resolveBuildSurfaceVertices(block, blocksByGuid);
     if (vertices.length >= 3) {
-      return { kind: "surface", vertices, color: 0x607d8b, opacity: 0.46, source: "explicit-build-links" };
+      const triangleIndices: number[] = [];
+      for (let index = 1; index < vertices.length - 1; index += 1) triangleIndices.push(0, index, index + 1);
+      return {
+        kind: "surface",
+        vertices,
+        triangleIndices,
+        boundaryVertices: vertices,
+        color: 0x607d8b,
+        opacity: 0.46,
+        source: "explicit-build-links",
+      };
     }
   }
   return { kind: "primitive", block, profile: schematicBlockProfile(block) };

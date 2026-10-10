@@ -27,3 +27,7 @@ Thumbs.db
 
 rustup-init.exe
 vs_BuildTools.exe
+
+# Convenient local copy produced by build-desktop.ps1; the canonical artifact
+# remains under src-tauri/target and release binaries are not source-controlled.
+Besiege Aero Analyzer.exe

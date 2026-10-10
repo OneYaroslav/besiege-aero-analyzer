@@ -15,7 +15,8 @@
     "preview": "vite preview --host 127.0.0.1",
     "tauri": "tauri",
     "desktop:dev": "tauri dev",
-    "desktop:build": "tauri build"
+    "desktop:build": "tauri build",
+    "clean:dev": "powershell -NoProfile -ExecutionPolicy Bypass -File clean-dev.ps1"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.11.1",
